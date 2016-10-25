@@ -1,0 +1,11 @@
+[
+    {
+        "type": "Post", 
+        "module": "Enumeration", 
+        "chain": "CLIENT",
+        "settings": {
+            "function": "f_get_platform_system", 
+            "args": null
+        }
+    }
+]

