@@ -6,7 +6,7 @@ import sys
 from packages.helpers import clienthelper
 
 
-# TODO
+# TODO make deployable client
 # make tiny client helper for the actual client
 # not all helper functions needed in here
 
