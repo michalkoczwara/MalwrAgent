@@ -68,7 +68,7 @@ def do_wizard(modules, config_filename, client):
         while True:
             # TODO
             # Classify module compatibility
-            # do only provide compatible modules
+            # do only show compatible modules
 
             # enforce proper chain configuration e.g. which module must not be run first in chain
 
