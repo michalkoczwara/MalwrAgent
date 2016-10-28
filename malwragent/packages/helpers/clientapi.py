@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
 import json
 import logging
 import pkgutil
-import sys
 
 from malwragent.packages import modules
 from tabulate import tabulate
@@ -18,11 +18,8 @@ __class_name__ = 'ClientAPI'
 
 class ClientAPI(object):
     def __init__(self, name='client', mode='client', logging_level=0, debug_level=0):
-        # TODO save general settings in chain or
-        #   at least in the json config dump
+        # TODO save general settings in chain or at least in the json config dump
         self.master_chain = dict()
-
-        # TODO run multiple chains simultaneously
         self.logging_level = logging_level
         self.debug_level = debug_level
         self.name = name
@@ -37,10 +34,6 @@ class ClientAPI(object):
             logging.basicConfig(level=logging.WARN)
         if self.logging_level == 3:
             logging.basicConfig(level=logging.INFO)
-
-    @staticmethod
-    def exit(return_code):
-        sys.exit(return_code)
 
     @staticmethod
     def get_import(module):
@@ -87,7 +80,7 @@ class ClientAPI(object):
                     required_args = None
                     required_format = None
                     if ATTR_ARGS[function]:
-                        # Does only work with a single argument !!!
+                        # Does only work with one argument !!!
                         # print _ATTR_ARGS[function][0]
                         if isinstance(ATTR_ARGS[function][0], tuple):
                             required_args, required_format = ATTR_ARGS[function][0]
@@ -108,9 +101,6 @@ class ClientAPI(object):
 
                     # ARGS provided but maybe incorrectly spelled
                     if required_args and _args:
-
-                        # TODO do only ask for arguments not provided
-
                         result['reason'] = 'Please check the following arguments: ' \
                                            + required_args
                         result['code'] = 401
@@ -144,7 +134,7 @@ class ClientAPI(object):
 
             return result
 
-        def do_validate_order(args, cur_idx):
+        def do_validate_module_order(args, cur_idx):
             result = dict()
             result['result'] = False
             result['reason'] = 'Module cannot be run first in chain'
@@ -167,7 +157,7 @@ class ClientAPI(object):
 
             return result
 
-        result = do_validate_order(args, cur_idx)
+        result = do_validate_module_order(args, cur_idx)
         if not result['result']:
             return result
 
@@ -194,7 +184,6 @@ class ClientAPI(object):
 
         cur_chain_idx = self.get_chain_length()
         if cur_chain_idx:
-            # TODO ERROR if CHAIN Key not in Dict()
             cur_chain_idx = self.get_chain_length_by_name(chain)
 
         result = self.validate_config(args, cur_idx=cur_chain_idx)
@@ -222,7 +211,7 @@ class ClientAPI(object):
             if mode == 'interactive':
                 return result
             else:
-                self.exit(2)
+                return False
 
     # TODO
     # merge chains
@@ -321,7 +310,7 @@ class ClientAPI(object):
         module_list = []
         for module_loader, name, is_pkg in pkgutil.iter_modules(modules.__path__):
             module = self.get_module(name)
-            if (module):
+            if module:
                 for function_name in module['functions']:
                     mod_info = {
                         'module': module['class'],
@@ -356,7 +345,7 @@ class ClientAPI(object):
         if self.debug_level > 2:
             print self.master_chain
 
-    def save_chain_to_file(self, filename='config.json'):
+    def save_chain_to_file(self, filename):
         chains = []
 
         for chain_name, module in self.master_chain.iteritems():

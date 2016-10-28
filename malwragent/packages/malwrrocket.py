@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import os
-import sys
 import time
 
 from termcolor import colored
@@ -31,10 +29,6 @@ class MalwrRocket(object):
         except KeyboardInterrupt:
             pass
 
-    @staticmethod
-    def exit(return_code):
-        sys.exit(return_code)
-
     def log_info(self, msg):
         logging.info(self.name + ':' + self.pid + ' ' + str(msg))
 
@@ -53,7 +47,7 @@ class MalwrRocket(object):
     def run(self):
         # START inner functions
         def run_registration():
-            #print self.chain
+            # print self.chain
 
             if self.debug_level > 0:
                 self.log_success('Chain ' + 'REG' + ' running')
@@ -76,9 +70,8 @@ class MalwrRocket(object):
                 if self.debug_level > 0:
                     self.log_fail(msg)
                 self.log_error(msg)
-                # self.exit(2)
 
-            # TODO retry when failed
+                # TODO retry when failed
 
         def convert_to_text(module_name, args):
             # print args
@@ -115,7 +108,7 @@ class MalwrRocket(object):
             return result
 
         def validate_result(result):
-            def handle_error_code():
+            def handle_error_code(error_code):
                 pass
 
             # ERROR "CODE" HANDLING
@@ -130,9 +123,8 @@ class MalwrRocket(object):
             # do special processing in here
             # perhaps shutdown initiated from a module
 
-            # self.log_info(result)
-
             # TODO: error handling
+            # TODO[28/10/2016][bl4ckw0rm] result type has to be defined in the module (return)
             if self.debug_level > 2:
                 self.log_notice('Result validation ' + str(type(result)) + ' ' + str(result))
 
@@ -172,8 +164,6 @@ class MalwrRocket(object):
 
         def run_client():
             while True:
-                # TODO how to run multiple chains async ??? this an malwragent issue
-
                 if self.debug_level > 0:
                     self.log_success('Chain ' + 'CLIENT' + ' running')
 
@@ -185,7 +175,7 @@ class MalwrRocket(object):
                     else:
                         self.log_error('Chain ' + 'CLIENT' + ' finished with errors')
 
-                # TODO random sleep
+                # TODO[28/10/2016][bl4ckw0rm] random sleep
                 if self.debug_level > 2:
                     self.log_notice('Sleeping ' + str(self.interval) + ' seconds')
 

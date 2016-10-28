@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
 import requests
@@ -7,7 +8,6 @@ from malwragent.packages.malwragentmodules import MalwrAgentModule
 from malwragent.packages.malwragentmodules import Decorators
 
 __class_name__ = 'Web'
-# make mode hex???
 __client_mode__ = True
 __server_mode__ = True
 __module_type__ = 'Transportation'
@@ -55,12 +55,13 @@ class Web(MalwrAgentModule):
         raise ConnectionError(err, request=request)
     ConnectionError: ('Connection aborted.', BadStatusLine("''",))
     """
-    def __do_get(self, url, data):
+    @staticmethod
+    def __do_get(url, data):
         # TODO[25/10/2016][bl4ckw0rm] do this better
         if data is not None:
             uri = '%s%s' % (url, data)
         else:
-            uri = '%s' % (url)
+            uri = '%s' % url
 
         req = requests.get(uri)
         # print req.status_code
@@ -72,8 +73,9 @@ class Web(MalwrAgentModule):
         else:
             return False  # req.status_code
 
-    def __do_post(self, url, data):
-        pass
+    @staticmethod
+    def __do_post(url, data):
+        return False  # req.status_code
 
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
@@ -87,7 +89,6 @@ class Web(MalwrAgentModule):
     @Decorators.config(run_first=True)
     def f_http_post(self, url):
         """HTTP POST Request"""
-        output = None
         input_ = self.settings['input']
         output = self.__do_post(url, input_)
         return output

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from constants import ATTR_ARGS
 from constants import ATTR_CONFIG
 

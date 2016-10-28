@@ -22,7 +22,6 @@ _CHAINS_TO_BUILD = ['CLIENT']
 _CHAIN_STORE = './myChains/'
 
 
-# TODO align text accordingly to screen width
 def print_welcome():
     print "#   __   __  _______  ___      _     _  ______    _______  _______  _______  __    _  _______ "
     print "#  |  |_|  ||   _   ||   |    | | _ | ||    _ |  |   _   ||       ||       ||  |  | ||       |"
@@ -39,10 +38,10 @@ def print_welcome():
     print "#"
 
 
-# TODO
-# deal with variable length of custom input variables
+# TODO do raw_input here
 def get_user_input():
     pass
+
 
 def do_wizard(modules, config_filename, client):
     # TODO
@@ -74,9 +73,6 @@ def do_wizard(modules, config_filename, client):
 
             selection = str(
                 raw_input('#  ([0-9]{n}|[N for NEXT]|[C for CHAIN]|[M for MODULES]) ' + chain + ' \\> ').strip())
-
-            # TODO
-            # PREVIOUS ??? low prio
 
             if selection.upper() == 'N':
                 if not client.get_chain_length_by_name(chain):
@@ -130,8 +126,7 @@ def do_wizard(modules, config_filename, client):
                             # TODO does this work for multiple arguments ???
                             if result['code'] in [400, 401, 402, 403, 404]:
                                 for missing_arg in result['missing_args'].split(','):
-                                    # TODO
-                                    # make def for user input
+                                    # TODO make def for user input
                                     print
                                     print colored(result['reason'], 'red')
                                     print
@@ -149,6 +144,8 @@ def do_wizard(modules, config_filename, client):
                                 print colored(result['reason'], 'red')
                                 print
                                 break
+                    else:
+                        break
             else:
                 print
                 print "# Nowhere to run !?"
