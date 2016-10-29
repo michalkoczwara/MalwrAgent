@@ -4,8 +4,8 @@ from __future__ import absolute_import
 import base64
 import hashlib
 
-from malwragent.packages.malwragentmodules import MalwrAgentModule
-from malwragent.packages.malwragentmodules import Decorators
+from malwragent.packages.helpers.agentmodule import AgentModule
+from malwragent.packages.helpers.agentmodule import Decorators
 
 __class_name__ = 'Crypto'
 # make mode hex???
@@ -14,7 +14,7 @@ __server_mode__ = True
 __module_type__ = 'Transformation'
 
 
-class Crypto(MalwrAgentModule):
+class Crypto(AgentModule):
     """provides crypto routines"""
 
     @staticmethod

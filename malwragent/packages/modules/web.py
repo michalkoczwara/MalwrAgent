@@ -4,8 +4,8 @@ from __future__ import absolute_import
 import requests
 import validators
 
-from malwragent.packages.malwragentmodules import MalwrAgentModule
-from malwragent.packages.malwragentmodules import Decorators
+from malwragent.packages.helpers.agentmodule import AgentModule
+from malwragent.packages.helpers.agentmodule import Decorators
 
 __class_name__ = 'Web'
 __client_mode__ = True
@@ -17,7 +17,7 @@ class _FORMAT(object):
     URL = validators.url
 
 
-class Web(MalwrAgentModule):
+class Web(AgentModule):
     """provides basic transportation routines"""
     # TODO[25/10/2016][bl4ckw0rm] Provide request timeout and ERROR handling
     """
@@ -27,17 +27,17 @@ class Web(MalwrAgentModule):
         self.run()
       File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/process.py", line 114, in run
         self._target(*self._args, **self._kwargs)
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwrrocket.py", line 30, in __init__
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agent.py", line 30, in __init__
         self.run()
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwrrocket.py", line 193, in run
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agent.py", line 193, in run
         run_client()
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwrrocket.py", line 178, in run_client
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agent.py", line 178, in run_client
         result = run_single_chain(self.chain['CLIENT'])
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwrrocket.py", line 156, in run_single_chain
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agent.py", line 156, in run_single_chain
         output = run_module(module, args=args)
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwrrocket.py", line 113, in run_module
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agent.py", line 113, in run_module
         result = getattr(instance, 'run')()
-      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/malwragentmodules.py", line 29, in run
+      File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/agentmodule.py", line 29, in run
         self.output = getattr(self, self.function)(*args)
       File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/modules/web.py", line 47, in f_http_get
         input_ = self.settings['input']

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 import logging
 import os
 import time
@@ -6,7 +8,7 @@ import time
 from termcolor import colored
 
 
-class MalwrRocket(object):
+class Agent(object):
     def __init__(self, name, mode, chain, interval, logging_level=0, debug_level=0):
         self.name = name
         self.mode = mode

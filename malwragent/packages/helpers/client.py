@@ -5,18 +5,19 @@ import json
 import logging
 import pkgutil
 
-from malwragent.packages import modules
 from tabulate import tabulate
 from termcolor import colored
 
+from malwragent.packages import modules
 from malwragent.packages.constants import ATTR_ARGS
 from malwragent.packages.constants import ATTR_CONFIG
-from malwragent.packages.helpers.rocketapi import RocketAPI
+from malwragent.packages.helpers.chain import Chain
+from malwragent.packages.helpers.agentrunner import AgentRunner
 
-__class_name__ = 'ClientAPI'
+__class_name__ = 'Client'
 
 
-class ClientAPI(object):
+class Client(object):
     def __init__(self, name='client', mode='client', logging_level=0, debug_level=0):
         # TODO save general settings in chain or at least in the json config dump
         self.master_chain = dict()
@@ -363,9 +364,9 @@ class ClientAPI(object):
         with open(filename, 'w') as outfile:
             json.dump(chains, outfile, indent=4)
 
-    def rocket_api(self):
-        rocket_api = RocketAPI(self.master_chain, self.name, self.mode,
-                               interval=self.interval,
-                               logging_level=self.logging_level,
-                               debug_level=self.debug_level)
-        rocket_api.main()
+    def start_agent(self):
+        agent = AgentRunner(self.master_chain, self.name, self.mode,
+                            interval=self.interval,
+                            logging_level=self.logging_level,
+                            debug_level=self.debug_level)
+        agent.main()

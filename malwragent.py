@@ -9,7 +9,7 @@ import time
 from tabulate import tabulate
 from termcolor import colored
 
-from malwragent.packages.helpers.clientapi import ClientAPI
+from malwragent.packages.helpers.client import Client
 
 # TODO[23/10/2016][bl4ckw0rm]
 # high: run multi optional chains as separate threads
@@ -152,14 +152,14 @@ def do_wizard(modules, config_filename, client):
                 print
 
     selection = str(
-        raw_input('#  Do you want to review your created chain? (Y|N) \\> ').strip())
+        raw_input('#  Do you want to review your chain? (Y|N) \\> ').strip())
     if selection.upper() == 'Y' or selection.upper() == 'YES':
         print
         print client.get_master_chain(out_format='table')
         print
 
     selection = str(
-        raw_input('#  Do you want to save your created chain as ' + config_filename + '? (Y|N) \\> ').strip())
+        raw_input('#  Do you want to save the chain as ' + config_filename + '? (Y|N) \\> ').strip())
     if selection.upper() == 'Y' or selection.upper() == 'YES':
         client.save_chain_to_file(config_filename)
 
@@ -219,15 +219,15 @@ def main():
         print "Config filename", config_filename
 
     # TODO create multiple client objects for multiple concurrent running clients
-    client_api = ClientAPI(logging_level=args.log, debug_level=args.debug)
+    client = Client(logging_level=args.log, debug_level=args.debug)
 
     if args.load:
         # TODO allow multiple config files
         client_name = config_filename.replace('.json', '')
-        client_api.set_client_name(client_name)
+        client.set_client_name(client_name)
 
         try:
-            client_api.load_chain_from_file(filename=config_filename)
+            client.load_chain_from_file(filename=config_filename)
         except IOError as err:
             if args.debug > 2:
                 print
@@ -247,13 +247,13 @@ def main():
             count -= 1
             time.sleep(1)
 
-        client_api.set_client_interval(args.interval)
-        client_api.rocket_api()
+        client.set_client_interval(args.interval)
+        client.start_agent()
     elif args.wizard:
-        client_api.set_client_name(client_name)
+        client.set_client_name(client_name)
         print_welcome()
-        all_modules_list = client_api.get_module_list(out_format='select')
-        return do_wizard(all_modules_list, config_filename, client_api)
+        all_modules_list = client.get_module_list(out_format='select')
+        return do_wizard(all_modules_list, config_filename, client)
     else:
         parser.print_help()
 

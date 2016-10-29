@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-from constants import ATTR_ARGS
-from constants import ATTR_CONFIG
+from __future__ import absolute_import
 
-__class_name__ = 'MalwrAgentModule'
+from malwragent.packages.constants import ATTR_ARGS
+from malwragent.packages.constants import ATTR_CONFIG
+
+__class_name__ = 'AgentModule'
 
 
-class MalwrAgentModule(object):
+class AgentModule(object):
     """module class all modules inherit from"""
 
     def __init__(self, mode, settings):
@@ -25,7 +27,7 @@ class MalwrAgentModule(object):
                 self.output = getattr(self, self.function)()
             else:
                 args = [y for x, y in self.args.iteritems()]
-                # TODO check callable with callable
+                # TODO check if callable
                 # print args
                 self.output = getattr(self, self.function)(*args)
         return self.output

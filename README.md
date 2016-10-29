@@ -8,11 +8,13 @@
 
     -- .- .-.. .-- .-. .- --. . -. - 
     
-### What is it?
+### About MalwrAgent
 
-### How do I get started?
+### How to get started
 
-### What if I need support?
+### How to write your own modules
+
+### Support
 
 Just drop me a line. Please, use contact information from below.
 
@@ -20,9 +22,15 @@ Just drop me a line. Please, use contact information from below.
 
 Linux
 
+### Contribute
+
+Feel free to browse through open issues and help where you can.
+
 ### Contact Information
 
-github@mfs-enterprise.com
+Name: Michael Schratt
+Twitter: @bl4ckw0rm
+Email: github@mfs-enterprise.com
 
 ### Licence
 

@@ -4,12 +4,12 @@ from __future__ import absolute_import
 import logging
 import multiprocessing
 
-from malwragent.packages.malwrrocket import MalwrRocket
+from malwragent.packages.helpers.agent import Agent
 
-__class_name__ = 'RocketAPI'
+__class_name__ = 'AgentRunner'
 
 
-class RocketAPI(object):
+class AgentRunner(object):
     def __init__(self, master_chain, name, mode, interval, logging_level=0, debug_level=0):
         self.master_chain = master_chain
         self.name = name
@@ -36,7 +36,7 @@ class RocketAPI(object):
         # for i in range(0, procs):
         # r = rocket(self.name, self.chain)
 
-        process = multiprocessing.Process(target=MalwrRocket,
+        process = multiprocessing.Process(target=Agent,
                                           args=(self.name, self.mode, self.master_chain,
                                                 self.interval, self.logging_level,
                                                 self.debug_level))

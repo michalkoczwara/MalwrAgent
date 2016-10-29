@@ -3,8 +3,8 @@ from __future__ import absolute_import
 
 import platform
 
-from malwragent.packages.malwragentmodules import MalwrAgentModule
-from malwragent.packages.malwragentmodules import Decorators
+from malwragent.packages.helpers.agentmodule import AgentModule
+from malwragent.packages.helpers.agentmodule import Decorators
 
 __class_name__ = 'Enumeration'
 __client_mode__ = True
@@ -12,7 +12,7 @@ __server_mode__ = False
 __module_type__ = 'Post'
 
 
-class Enumeration(MalwrAgentModule):
+class Enumeration(AgentModule):
     """provides host enumeration routines"""
 
     @Decorators.args(None)
