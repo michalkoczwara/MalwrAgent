@@ -58,6 +58,7 @@ class Web(AgentModule):
     @staticmethod
     def __do_get(url, data):
         # TODO[25/10/2016][bl4ckw0rm] do this better
+        # TODO[30/10/2016][bl4ckw0rm] validate URI for its domain, path and parameter
         if data is not None:
             uri = '%s%s' % (url, data)
         else:

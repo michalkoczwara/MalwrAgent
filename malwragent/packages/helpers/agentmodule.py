@@ -9,7 +9,6 @@ __class_name__ = 'AgentModule'
 
 class AgentModule(object):
     """module class all modules inherit from"""
-
     def __init__(self, mode, settings):
         self.mode = mode
         self.output = None
@@ -19,17 +18,19 @@ class AgentModule(object):
         self.input = self.settings.get('input')
         self.args = self.settings.get('args')
 
-        # print self.args
-
     def run(self):
         if hasattr(self, self.function):
-            if self.args is None:
-                self.output = getattr(self, self.function)()
+            # check if function f in module m is callable
+            instance_method = getattr(self, self.function)
+            if callable(instance_method):
+                if self.args is None:
+                    self.output = instance_method()
+                else:
+                    # convert k,v dict into list of v
+                    args = [v for k, v in self.args.iteritems()]
+                    self.output = instance_method(*args)
             else:
-                args = [y for x, y in self.args.iteritems()]
-                # TODO check if callable
-                # print args
-                self.output = getattr(self, self.function)(*args)
+                self.output = False
         return self.output
 
 

