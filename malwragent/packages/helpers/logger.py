@@ -2,7 +2,6 @@
 from __future__ import absolute_import
 
 import logging
-from termcolor import colored
 
 
 class Logger(object):
@@ -33,12 +32,3 @@ class Logger(object):
 
     def log_critical(self, msg):
         logging.critical(self.name + ': ' + str(msg))
-
-    def print_fail(self, msg, color='red'):
-        print colored(self.name + ': ' + str(msg), color)
-
-    def print_success(self, msg, color='green'):
-        print colored(self.name + ': ' + str(msg), color)
-
-    def print_notice(self, msg):
-        print self.name + ': ' + str(msg)

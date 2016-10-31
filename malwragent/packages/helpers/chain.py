@@ -64,7 +64,9 @@ class Chain(object):
 
     # TODO low: validate chain order for second,third ... module ???
     def __validate_config(self, mod_idx, args=None):
+
         # START inner functions
+
         def __do_validate():
             _result = {'result': False, 'reason': '???', 'code': 500}
 
@@ -106,29 +108,25 @@ class Chain(object):
                                            + required_args
                         _result['code'] = 401
 
-                        for _r in required_args.split(','):
-                            # print _r,_args
-                            if _r in _args:
-                                # print "in",_args[_r]
-
+                        for argument in required_args.split(','):
+                            if argument in _args:
                                 # EMPTY
-                                if not _args[_r]:
+                                if not _args[argument]:
                                     _result['reason'] = 'Empty value is not accepted'
-                                    _result['missing_args'] = _r
+                                    _result['missing_args'] = argument
                                     _result['code'] = 403
                                 else:
                                     # NOT EMPTY
                                     if required_format:
-                                        if not required_format.im_func(_args[_r]):
+                                        if not required_format.im_func(_args[argument]):
                                             _result['reason'] = 'Format not valid'
-                                            _result['missing_args'] = _r
+                                            _result['missing_args'] = argument
                                             _result['code'] = 402
-                                            # print _r,_args
                                         else:
                                             _result = {'result': True}
                             else:
                                 # TODO[30/10/2016][bl4ckw0rm] ARRAY OR multiple arguments supported ?
-                                check_args = _r
+                                check_args = argument
                                 _result['missing_args'] = check_args
                                 _result['code'] = 404
 
@@ -174,7 +172,7 @@ class Chain(object):
             text += '>'
             return text
 
-        """ loading module first to run decorators """
+        # loading module first to have decorators run
         module = self.__get_import(module)
         module_name = module.__class_name__
 
