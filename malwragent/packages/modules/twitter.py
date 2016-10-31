@@ -17,10 +17,15 @@ __module_type__ = 'Transportation'
 class Twitter(AgentModule):
     """provides basic twitter communication routines"""
 
+    @staticmethod
     @Decorators.args(['profile_name'])
     @Decorators.config(run_first=True)
-    def f_grab_command_from_twitter_profile(self, profile_name):
-        """Grab 0xXXXXXXXX tag from Profile, Tag must match [a-zA-Z0-9_]"""
+    def f_grab_cmd_from_twitter_profile(profile_name):
+        """Grab 0xXXXXXXXX tag from Profile, Tag must match [a-zA-Z0-9_]
+        :rtype: string
+        :param profile_name: twitter profile name without leading @
+        :return: string embedded in the profile description
+        """
         url = 'https://twitter.com/%(profile)s'
         payload = {
             'profile': profile_name
@@ -31,4 +36,4 @@ class Twitter(AgentModule):
         match = re.search('(0x)\w+', profile_description)
         output = match.group(0)
 
-        return output
+        return str(output)
