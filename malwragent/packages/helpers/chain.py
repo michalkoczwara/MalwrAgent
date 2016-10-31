@@ -117,13 +117,12 @@ class Chain(object):
                                     _result['code'] = 403
                                 else:
                                     # NOT EMPTY
+                                    _result = {'result': True}
                                     if required_format:
                                         if not required_format.im_func(_args[argument]):
                                             _result['reason'] = 'Format not valid'
                                             _result['missing_args'] = argument
                                             _result['code'] = 402
-                                        else:
-                                            _result = {'result': True}
                             else:
                                 # TODO[30/10/2016][bl4ckw0rm] ARRAY OR multiple arguments supported ?
                                 check_args = argument
