@@ -18,6 +18,9 @@ class Logger(object):
         if self.logging_level == 4:
             logging.basicConfig(level=logging.DEBUG)
 
+        # Suppress logging for the PIL.Image module but CRITICAL
+        logging.getLogger("PIL").setLevel(logging.CRITICAL)
+
     def log_debug(self, msg):
         logging.debug(self.name + ': ' + str(msg))
 

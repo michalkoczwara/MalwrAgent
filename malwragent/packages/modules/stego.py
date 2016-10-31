@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+from stegano import lsb
+
 from malwragent.packages.helpers.agentmodule import AgentModule
+from malwragent.packages.helpers.agentmodule import Decorators
 
 __class_name__ = 'Stego'
 __client_mode__ = True
@@ -11,4 +14,9 @@ __module_type__ = 'Transformation'
 
 class Stego(AgentModule):
     """provides basic stego routines"""
-    pass
+
+    @Decorators.args(None)  # Decorators.args must be defined at the moment
+    def f_extract_text_from_image(self):
+        input_ = self.settings['input']
+        output = lsb.reveal(input_)
+        return output

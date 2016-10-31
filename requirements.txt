@@ -1,3 +1,4 @@
+stegano
 BeautifulSoup
 requests
 termcolor

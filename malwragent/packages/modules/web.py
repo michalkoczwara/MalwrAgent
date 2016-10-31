@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import requests
 import validators
 
+from cStringIO import StringIO
+
 from malwragent.packages.helpers.agentmodule import AgentModule
 from malwragent.packages.helpers.agentmodule import Decorators
 
@@ -42,7 +44,6 @@ class Web(AgentModule):
       File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/modules/web.py", line 47, in f_http_get
         input_ = self.settings['input']
       File "/Users/bl4ckw0rm/PycharmProjects/MalwrAgent/malwragent/packages/modules/web.py", line 29, in __do_get
-
       File "/Library/Python/2.7/site-packages/requests/api.py", line 70, in get
         return request('get', url, params=params, **kwargs)
       File "/Library/Python/2.7/site-packages/requests/api.py", line 56, in request
@@ -92,4 +93,16 @@ class Web(AgentModule):
         """HTTP POST Request"""
         input_ = self.settings['input']
         output = self.__do_post(url, input_)
+        return output
+
+    @staticmethod
+    @Decorators.args([('url', _FORMAT.URL)])
+    @Decorators.config(run_first=True)
+    def f_retrieve_image(url):
+        """Retrieve an image, Image is stored in memory only
+        :rtype: StringIO object
+        :param url: Image URL
+        :return: Object of image
+        """
+        output = StringIO(requests.get(url).content)
         return output
