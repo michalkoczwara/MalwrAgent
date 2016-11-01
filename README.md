@@ -152,9 +152,9 @@ Email: github@mfs-enterprise.com
 
 ### Licence
 
-Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)
+The MIT License (MIT)
 
-Visit [https://creativecommons.org/licenses/by-nd/4.0/](https://creativecommons.org/licenses/by-nd/4.0/) for further information
+Visit [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT) for further information.
 
 #### Disclaimer
 
