@@ -17,7 +17,7 @@ class Stego(AgentModule):
 
     @Decorators.args(None)  # Decorators.args must be defined at the moment
     def f_extract_text_from_image(self):
-        """ Extract hidden text from an image object
+        """Extract hidden text from an image object
 
         :rtype: String
         :return: A text, command string

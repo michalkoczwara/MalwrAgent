@@ -195,7 +195,7 @@ def main():
                         choices=[1, 2, 3, 4])
     parser.add_argument('-V', '--version',
                         action='version',
-                        version='%(prog)s (version 0.1)')
+                        version='%(prog)s (version 0.3)')
 
     args = parser.parse_args()
 
