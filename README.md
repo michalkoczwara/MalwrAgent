@@ -155,3 +155,7 @@ Email: github@mfs-enterprise.com
 Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)
 
 Visit [https://creativecommons.org/licenses/by-nd/4.0/](https://creativecommons.org/licenses/by-nd/4.0/) for further information
+
+#### Disclaimer
+
+All the information provided on this site are for educational purposes only. The site or the authors are not responsible for any misuse. Do not use the information to write malicious software. Use the information to expand knowledge and improve current or future detection & prevention technology. Use at your own risk. Breaking into computer systems is illegal.
