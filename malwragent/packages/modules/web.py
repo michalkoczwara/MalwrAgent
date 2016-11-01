@@ -49,7 +49,7 @@ class Web(AgentModule):
         payload = {
             'param': data
         }
-        print payload
+
         req = requests.post(url, payload)
         # print req.status_code
         if req.status_code == 200:
