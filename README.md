@@ -136,7 +136,7 @@ Just drop me a line. Please, use contact information from below.
 
 ### Supported Operating Systems
 
-Linux
+Linux, macOS
 
 ### Contribute
 
@@ -146,7 +146,7 @@ Feel free to browse through open issues and help where you can.
 
 Name: Michael Schratt
 
-Twitter: @bl4ckw0rm
+Twitter: [@bl4ckw0rm](https://twitter.com/bl4ckw0rm)
 
 Email: github@mfs-enterprise.com
 
