@@ -14,7 +14,7 @@
 
 #### THIS PROJECT IS STILL IN ALPHA STATE
 
-Hello Agent M! Welcome to the MalwrAgency. The MalwrAgent enables you test your current detection & prevention capabilities in just a few simple steps. The idea is to offer a framework of different modules you can connect to make up a chain. For example, egress testing can be established by connecting multiple HTTP POST and HTTP GET requests. 
+Hello Agent M! Welcome to the MalwrAgency. The MalwrAgent enables you to test your current detection & prevention capabilities in just a few simple steps. The idea is to offer a framework of different modules you can connect to make up a chain. For example, egress testing can be established by connecting multiple HTTP POST and HTTP GET requests. 
 
 Threat actors tend to use more sophisticated techniques like steganography. This technique is not only applied during infiltration but also used for data exfiltration based on video or image steganography.
 Following log output demonstrates the download of an image that contains a hidden string. This string is then used as an input argument for the Command module. Finally, `cat /etc/passwd` is executed. 
