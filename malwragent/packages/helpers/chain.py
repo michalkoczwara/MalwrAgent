@@ -13,6 +13,7 @@ __class_name__ = 'Chain'
 
 
 class Chain(object):
+    """the chain class consists of all methods needed to create a client's chain"""
     def __init__(self, name, logging_level):
         # start with an empty chain
         self.chain = dict()
@@ -25,21 +26,26 @@ class Chain(object):
 
     @staticmethod
     def __get_import(module):
+        """import a module from the modules directory"""
         # TODO[25/10/2016][bl4ckw0rm] malwragent.packages.modules - retrieve with function?
         return __import__('malwragent.packages.modules.' + module.lower(),
                           fromlist=[module])
 
     def init_chain(self, chain_id):
+        """initiate a chain by its ID"""
         if not self.chain.get(chain_id, None):
             self.chain[chain_id] = []
 
     def get_chain_length(self):
+        """get a chain's length"""
         return len(self.chain)
 
     def get_chain_length_by_id(self, chain_id):
+        """get a chain's length, identified by ID"""
         return len(self.get_chain_by_id(chain_id))
 
     def get_chain_by_id(self, chain_id, out_format='raw'):
+        """get a chain, identified by ID"""
         if out_format == 'raw':
             return self.chain[chain_id]
         elif out_format == 'table':
@@ -63,90 +69,101 @@ class Chain(object):
             return result
 
     # TODO low: validate chain order for second,third ... module ???
-    def __validate_config(self, mod_idx, args=None):
-
+    def __validate_config(self, module_idx, module_args):
+        """validate a chain's configuration based on module order and argument format"""
         # START inner functions
 
         def __do_validate():
             _result = {'result': False, 'reason': '???', 'code': 500}
 
-            if args is None:
+            if module_args is None:
                 _result = {'result': False, 'reason': 'Please do not act like a fool, try again', 'code': 501}
             else:
-                settings = args.get('settings', None)
+                settings = module_args.get('settings', None)
                 function = settings.get('function', None)
-                _args = settings.get('args', None)
-                # print _args
+                user_provided_arguments = settings.get('args', None)
+
                 if function in ATTR_ARGS:
-                    self.logger.log_info('Checking ' + function + ' with parameters ' + str(_args))
+                    self.logger.log_debug('Checking ' + function + ' with parameters ' + str(user_provided_arguments))
 
-                    required_args = None
-                    required_format = None
+                    # Normalize required arguments
+                    required_args = []
                     if ATTR_ARGS[function]:
-                        # Does only work with one argument !!!
-                        # print _ATTR_ARGS[function][0]
-                        if isinstance(ATTR_ARGS[function][0], tuple):
-                            required_args, required_format = ATTR_ARGS[function][0]
-                            # print required_args
-                            # print required_format
-                        else:
-                            required_args = ','.join(ATTR_ARGS[function])
+                        for argument in ATTR_ARGS[function]:
+                            if isinstance(argument, tuple):
+                                required_args.append(argument)
+                            else:
+                                required_args.append((argument, None))
 
-                    if required_args is None and _args is None:
+                    if not required_args and user_provided_arguments is None:
                         _result = {'result': True}
 
                     # ARGS not provided
-                    if required_args and _args is None:
+                    if required_args and user_provided_arguments is None:
                         _result['reason'] = 'Please provide the following arguments: ' \
-                                           + required_args
-                        _result['missing_args'] = required_args
+                                            + ','.join([a for a, f in required_args])
+                        _result['missing_args'] = [a for a, f in required_args]
                         _result['code'] = 400
 
-                    # ARGS provided but maybe incorrectly spelled
-                    if required_args and _args:
-                        _result['reason'] = 'Please check the following arguments: ' \
-                                           + required_args
-                        _result['code'] = 401
+                    # ARGS provided but maybe incorrectly spelled, or invalid formatted
+                    if required_args and user_provided_arguments:
+                        _result = {
+                            'result': True
+                        }
 
-                        for argument in required_args.split(','):
-                            if argument in _args:
+                        missing_arguments = []
+                        for argument, required_format in required_args:
+                            if argument in user_provided_arguments:
                                 # EMPTY
-                                if not _args[argument]:
-                                    _result['reason'] = 'Empty value is not accepted'
-                                    _result['missing_args'] = argument
-                                    _result['code'] = 403
+                                if not user_provided_arguments[argument]:
+                                    _result = {
+                                        'result': False,
+                                        'reason': 'Empty value is not accepted',
+                                        'code': 403
+                                    }
+
+                                    missing_arguments.append(argument)
+                                    break
                                 else:
                                     # NOT EMPTY
-                                    _result = {'result': True}
                                     if required_format:
-                                        if not required_format.im_func(_args[argument]):
-                                            _result['reason'] = 'Format not valid'
-                                            _result['missing_args'] = argument
-                                            _result['code'] = 402
-                            else:
-                                # TODO[30/10/2016][bl4ckw0rm] ARRAY OR multiple arguments supported ?
-                                check_args = argument
-                                _result['missing_args'] = check_args
-                                _result['code'] = 404
+                                        if not required_format.im_func(user_provided_arguments[argument]):
+                                            _result = {
+                                                'result': False,
+                                                'reason': 'Format not valid',
+                                                'code': 402
+                                            }
+
+                                            missing_arguments.append(argument)
+                                            break
+
+                        if not _result['result']:
+                            _result['missing_args'] = missing_arguments
+                else:
+                    # function is not in required argument list
+                    _result = {
+                        'result': True,
+                        'code': 200
+                    }
 
             return _result
 
         def __do_validate_module_order():
-            _result = dict()
-            _result['result'] = False
-            _result['reason'] = 'Module cannot be run first in chain'
-            _result['code'] = 405
+            _result = {
+                'result': False,
+                'reason': 'Module cannot be run first in chain',
+                'code': 405
+            }
 
-            settings = args.get('settings', None)
+            settings = module_args.get('settings', None)
             function = settings.get('function', None)
             config = ATTR_CONFIG.get(function, None)
 
-            if mod_idx < 1:
+            if module_idx < 1:
                 if config:
-                    allowed_to_run_first_in_chain = config.get('run_first', None)
-                    if allowed_to_run_first_in_chain:
+                    if config.get('run_first', None):
                         _result['result'] = True
-            elif mod_idx >= 1:
+            elif module_idx >= 1:
                 _result['result'] = True
 
             return _result
@@ -159,15 +176,15 @@ class Chain(object):
 
         return result
 
-    def add_item(self, chain_id, module, args=None, mode='auto'):
+    def add_item(self, chain_id, module, module_args, mode='auto'):
         def convert_to_text(_module_name):
             text = ''
             text += 'Adding function '
-            text += str(args['settings']['function'])
+            text += str(module_args['settings']['function'])
             text += ' from module '
             text += _module_name
             text += ' with args <'
-            text += str(args['settings']['args'])
+            text += str(module_args['settings']['args'])
             text += '>'
             return text
 
@@ -176,17 +193,17 @@ class Chain(object):
         module_name = module.__class_name__
 
         module_idx = self.get_chain_length_by_id(chain_id)
-        result = self.__validate_config(module_idx, args)
+        result = self.__validate_config(module_idx, module_args)
         self.logger.log_debug(result)
 
         if result['result'] is True:
-            self.logger.log_debug(convert_to_text(module_name) + ' done')
+            self.logger.log_info(convert_to_text(module_name) + ' done')
 
-            self.chain[chain_id].append((module, args))
+            self.chain[chain_id].append((module, module_args))
             if mode == 'interactive':
                 return result
         elif result['result'] is False:
-            self.logger.log_debug(convert_to_text(module_name) + ' failed')
+            self.logger.log_info(convert_to_text(module_name) + ' failed')
 
             if mode == 'interactive':
                 return result

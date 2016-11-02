@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""the web module provides HTTP communication methods"""
+"""the web module provides methods for HTTP communication"""
 from __future__ import absolute_import
 
 import requests

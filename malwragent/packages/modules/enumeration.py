@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""the enumeration module provides methods for platform enumeration and reconnaissance"""
 from __future__ import absolute_import
 
 import platform
@@ -15,32 +16,27 @@ __module_type__ = 'Post'
 class Enumeration(AgentModule):
     """provides host enumeration routines"""
 
-    @Decorators.args(None)
     @Decorators.config(run_first=True)
     def f_get_platform(self):
         return platform.platform()
 
-    @Decorators.args(None)
     @Decorators.config(run_first=True)
     def f_get_platform_version(self):
         return platform.version()
 
-    @Decorators.args(None)
     @Decorators.config(run_first=True)
     def f_get_platform_machine(self):
         return platform.machine()
 
-    @Decorators.args(None)
     @Decorators.config(run_first=True)
     def f_get_platform_system(self):
         return platform.system()
 
-    @Decorators.args(None)
     @Decorators.config(run_first=True)
     def f_get_platform_processor(self):
         return platform.processor()
 
-    @Decorators.args(None)
+    @Decorators.args(None)  # Let this definition for testing purpose
     @Decorators.config(run_first=True)
     def f_get_platform_uname(self):
         return str(platform.uname())

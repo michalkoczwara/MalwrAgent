@@ -11,13 +11,10 @@ from termcolor import colored
 
 from malwragent.packages.helpers.client import Client
 
-# TODO[23/10/2016][bl4ckw0rm]
-# medium: multiple config files -> run multiple agents in parallel
-
-""" There is at least a client chain to build """
+# There is at least a client chain to build
 __CHAINS_TO_BUILD = ['CLIENT']
 
-""" Location where chains are stored """
+# Location where chains are stored
 __CHAIN_STORE = './myChains/'
 
 
@@ -121,14 +118,12 @@ def do_wizard(modules, config_filename, client):
                             print
                         elif not result['result']:
                             # TODO[29/10/2016][bl4ckw0rm] move missing arg check to client.py
-                            # TODO does this work for multiple arguments ???
                             if result['code'] in [400, 401, 402, 403, 404]:
-                                for missing_arg in result['missing_args'].split(','):
+                                print
+                                print colored(result['reason'], 'red')
+                                print
+                                for missing_arg in result['missing_args']:
                                     # TODO make def for user input
-                                    print
-                                    print colored(result['reason'], 'red')
-                                    print
-
                                     missing_arg_value = str(raw_input('# +[' + missing_arg + '] \\> ').strip())
 
                                     settings = module_args['settings']
@@ -138,6 +133,11 @@ def do_wizard(modules, config_filename, client):
                                     args[missing_arg] = missing_arg_value
                                     settings['args'] = args
                             elif result['code'] in [405]:
+                                print
+                                print colored(result['reason'], 'red')
+                                print
+                                break
+                            elif result['code'] in [500]:
                                 print
                                 print colored(result['reason'], 'red')
                                 print
@@ -199,8 +199,7 @@ def main():
 
     args = parser.parse_args()
 
-    # print args
-    # TODO validate all parsed arguments
+    # TODO[01/11/2016][bl4ckw0rm] validate all parsed arguments
 
     config_filename = args.configfile
     if not config_filename.endswith('.json'):

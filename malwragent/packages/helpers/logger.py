@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 import logging
 
+__class_name__ = 'Logger'
+
 
 class Logger(object):
     def __init__(self, name, logging_level):

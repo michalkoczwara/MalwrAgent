@@ -6,6 +6,8 @@ import time
 
 from malwragent.packages.helpers.logger import Logger
 
+__class_name__ = 'Agent'
+
 
 class Agent(object):
     def __init__(self, name, mode, chain, interval, logging_level=0):
