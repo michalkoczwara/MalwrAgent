@@ -126,6 +126,11 @@ You can use the wizard to create a new client. A client consists of a chain of m
     
     See you then. Use 'malwragent.py -l -c myChains/test.json' to run your client.
 
+
+### Future Work
+
+Please follow my repository's projects
+
 ### Write your own modules
 
 TBD
