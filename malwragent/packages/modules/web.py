@@ -74,15 +74,13 @@ class Web(AgentModule):
     @Decorators.config(run_first=True)
     def f_http_get(self, url):
         """send http get request"""
-        output = self.__do_http_request('GET', url, self.settings['input'])
-        return output
+        return self.__do_http_request('GET', url, self.settings['input'])
 
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_post(self, url):
         """send http post request"""
-        output = self.__do_http_request('POST', url, self.settings['input'])
-        return output
+        return self.__do_http_request('GET', url, self.settings['input'])
 
     @staticmethod
     @Decorators.args([('url', _FORMAT.URL)])
