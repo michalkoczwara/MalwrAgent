@@ -14,29 +14,41 @@ __module_type__ = 'Post'
 
 
 class Enumeration(AgentModule):
-    """provides host enumeration routines"""
+    """provide basic host enumeration routines"""
 
+    @staticmethod
     @Decorators.config(run_first=True)
-    def f_get_platform(self):
+    def f_get_platform():
+        """identify platform in very detail"""
         return platform.platform()
 
+    @staticmethod
     @Decorators.config(run_first=True)
-    def f_get_platform_version(self):
+    def f_get_platform_version():
+        """identify system's release version"""
         return platform.version()
 
+    @staticmethod
     @Decorators.config(run_first=True)
-    def f_get_platform_machine(self):
+    def f_get_platform_machine():
+        """identify machine type"""
         return platform.machine()
 
+    @staticmethod
     @Decorators.config(run_first=True)
-    def f_get_platform_system(self):
+    def f_get_platform_system():
+        """identify OS name"""
         return platform.system()
 
+    @staticmethod
     @Decorators.config(run_first=True)
-    def f_get_platform_processor(self):
+    def f_get_platform_processor():
+        """identify the processor name"""
         return platform.processor()
 
-    @Decorators.args(None)  # Let this definition for testing purpose
+    @staticmethod
+    @Decorators.args(None)
     @Decorators.config(run_first=True)
-    def f_get_platform_uname(self):
+    def f_get_platform_uname():
+        """identify system, node, release, version, machine and processor"""
         return str(platform.uname())

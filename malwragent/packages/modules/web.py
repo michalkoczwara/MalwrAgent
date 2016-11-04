@@ -48,7 +48,7 @@ class Web(AgentModule):
             if request.text:
                 return request.text
             else:
-                return True  # req.text
+                return True
         else:
             return False  # think about returning the req.status_code
 
@@ -69,21 +69,19 @@ class Web(AgentModule):
 
         return self.__validate_request_status(request)
 
-    # how to ignore output ??
+    # TODO[04/11/2016][bl4ckw0rm] how to ignore output ??
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_get(self, url):
         """send http get request"""
-        input_ = self.settings['input']
-        output = self.__do_http_request('GET', url, input_)
+        output = self.__do_http_request('GET', url, self.settings['input'])
         return output
 
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
-    def f_http_post(self, url):  # ask for two args, current only one supported
+    def f_http_post(self, url):
         """send http post request"""
-        input_ = self.settings['input']
-        output = self.__do_http_request('POST', url, input_)
+        output = self.__do_http_request('POST', url, self.settings['input'])
         return output
 
     @staticmethod
@@ -95,5 +93,5 @@ class Web(AgentModule):
         :param url: Image URL
         :return: Object of image
         """
-        output = StringIO(requests.get(url).content)  # Use BytesIO
+        output = StringIO(requests.get(url).content)  # TODO[04/11/2016][bl4ckw0rm] Use BytesIO
         return output
