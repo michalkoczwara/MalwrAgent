@@ -52,8 +52,8 @@ class Web(AgentModule):
         else:
             return False  # think about returning the req.status_code
 
-    def __do_http_request(self, type, url, data):
-        """makes http get and post requests"""
+    def __do_http_request(self, type_, url, data):
+        """make http get and post requests"""
         parsed_url = self.__parse_url(url)
         parameter = self.__get_parameter_from_parsed_url(parsed_url)
         hostname = self.__get_host_from_parsed_url(parsed_url)
@@ -62,9 +62,9 @@ class Web(AgentModule):
             parameter: data
         }
 
-        if type == 'GET':
+        if type_ == 'GET':
             request = requests.get(url, payload)
-        else:
+        elif type_ == 'POST':
             request = requests.post(url, payload)
 
         return self.__validate_request_status(request)
