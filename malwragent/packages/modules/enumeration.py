@@ -47,7 +47,7 @@ class Enumeration(AgentModule):
         return platform.processor()
 
     @staticmethod
-    @Decorators.args(None)
+    @Decorators.args(None)  # can be applied to methods, not a must
     @Decorators.config(run_first=True)
     def f_get_platform_uname():
         """identify system, node, release, version, machine and processor"""

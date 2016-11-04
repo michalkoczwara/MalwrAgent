@@ -30,16 +30,16 @@ class Crypto(AgentModule):
 
     def __calculate_hash(self, type_):
         """calculate hash based on type"""
-        m = None
+        message_digest = None
         if type_ == 'md5':
-            m = hashlib.md5()
+            message_digest = hashlib.md5()
         elif type_ == 'sha1':
-            m = hashlib.sha1()
+            message_digest = hashlib.sha1()
         elif type_ == 'sha256':
-            m = hashlib.sha256()
+            message_digest = hashlib.sha256()
 
-        m.update(self.settings['input'])
-        return m.hexdigest()
+        message_digest.update(self.settings['input'])
+        return message_digest.hexdigest()
 
     @Decorators.args(None)  # can be applied to methods, not a must
     def f_md5(self):

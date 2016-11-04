@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""the google module provides methods for browsing google results"""
 from __future__ import absolute_import
 
 from malwragent.packages.helpers.agentmodule import AgentModule
@@ -10,5 +11,5 @@ __module_type__ = 'Post'
 
 
 class Google(AgentModule):
-    """provides basic search engine routines"""
+    """provide basic search engine routines"""
     pass

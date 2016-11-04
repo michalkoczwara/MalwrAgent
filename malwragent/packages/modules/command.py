@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""the command module provides methods for command execution"""
 from __future__ import absolute_import
 
 import shlex
@@ -14,12 +15,11 @@ __module_type__ = 'Post'
 
 
 class Command(AgentModule):
-    """provides command execution routines"""
+    """provide command execution routines"""
 
     @Decorators.args(None)
     def f_exec_system(self):
-        input_ = self.settings['input']
-        cli_and_args = shlex.split(input_)
+        """execute a command"""
+        cli_and_args = shlex.split(self.settings['input'])
         process = subprocess.Popen(cli_and_args, stdout=subprocess.PIPE)
-        output = process.stdout.read().strip()
-        return output
+        return process.stdout.read().strip()

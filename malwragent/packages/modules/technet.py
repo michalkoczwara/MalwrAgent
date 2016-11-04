@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""the technet module provides methods to extract information from posts or an user profile"""
 from __future__ import absolute_import
 
 from malwragent.packages.helpers.agentmodule import AgentModule
@@ -10,5 +11,5 @@ __module_type__ = 'Transportation'
 
 
 class Technet(AgentModule):
-    """provides basic technet communication routines"""
+    """provide basic technet information extraction routines"""
     pass
