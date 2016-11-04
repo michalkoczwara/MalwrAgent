@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""the crypto module provides methods for encoding, hashing and encryption"""
 from __future__ import absolute_import
 
 import base64
@@ -15,49 +16,48 @@ __module_type__ = 'Transformation'
 
 
 class Crypto(AgentModule):
-    """provides crypto routines"""
+    """provide basic crypto routines"""
 
     @staticmethod
     def __get_algorithms():
-        # print dir(hashlib)
+        """return available algorithms from hashlib"""
         return hashlib.algorithms_available
 
-        # set(['SHA1', 'MDC2', 'SHA', 'SHA384', 'ecdsa-with-SHA1', 'SHA256',
-
+    # set(['SHA1', 'MDC2', 'SHA', 'SHA384', 'ecdsa-with-SHA1', 'SHA256',
     #     'SHA512', 'md4', 'md5', 'sha1', 'dsaWithSHA', 'DSA-SHA', 'sha',
     #     'sha224', 'dsaEncryption', 'DSA', 'ripemd160', 'mdc2', 'MD5',
     #     'MD4', 'sha384', 'SHA224', 'sha256', 'sha512', 'RIPEMD160'])
 
-    @Decorators.args(None)
+    def __calculate_hash(self, type_):
+        """calculate hash based on type"""
+        m = None
+        if type_ == 'md5':
+            m = hashlib.md5()
+        elif type_ == 'sha1':
+            m = hashlib.sha1()
+        elif type_ == 'sha256':
+            m = hashlib.sha256()
+
+        m.update(self.settings['input'])
+        return m.hexdigest()
+
+    @Decorators.args(None)  # can be applied to methods, not a must
     def f_md5(self):
-        input_ = self.settings['input']
-        # print self.mode
-        m = hashlib.md5()
-        m.update(input_)
-        return m.hexdigest()
+        """calculate md5 hash"""
+        return self.__calculate_hash('md5')
 
-    @Decorators.args(None)
     def f_sha1(self):
-        input_ = self.settings['input']
-        # print self.mode
-        m = hashlib.sha1()
-        m.update(input_)
-        return m.hexdigest()
+        """calculate sha1 hash"""
+        return self.__calculate_hash('sha1')
 
-    @Decorators.args(None)
     def f_sha256(self):
-        input_ = self.settings['input']
-        # print self.mode
-        m = hashlib.sha256()
-        m.update(input_)
-        return m.hexdigest()
+        """calculate sha256 hash"""
+        return self.__calculate_hash('sha256')
 
-    @Decorators.args(None)
     def f_base64_encode(self):
-        input_ = self.settings['input']
-        return base64.b64encode(input_)
+        """encode input with base64"""
+        return base64.b64encode(self.settings['input'])
 
-    @Decorators.args(None)
     def f_base64_decode(self):
-        input_ = self.settings['input']
-        return base64.b64decode(input_)
+        """decode input with base64"""
+        return base64.b64decode(self.settings['input'])
