@@ -7,7 +7,7 @@ import validators
 
 from urlparse import urlparse
 from urlparse import parse_qsl  # return data as a list of name, value pairs
-from cStringIO import StringIO
+from io import BytesIO
 
 from malwragent.packages.helpers.agentmodule import AgentModule
 from malwragent.packages.helpers.agentmodule import Decorators
@@ -69,7 +69,6 @@ class Web(AgentModule):
 
         return self.__validate_request_status(request)
 
-    # TODO[04/11/2016][bl4ckw0rm] how to ignore output ??
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_get(self, url):
@@ -91,5 +90,5 @@ class Web(AgentModule):
         :param url: Image URL
         :return: Object of image
         """
-        output = StringIO(requests.get(url).content)  # TODO[04/11/2016][bl4ckw0rm] Use BytesIO
+        output = BytesIO(requests.get(url).content)
         return output

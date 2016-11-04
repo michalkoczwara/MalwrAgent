@@ -48,7 +48,7 @@ class Logger(object):
         self.__do_log('DEBUG', msg)
 
     def log_info(self, msg):
-        """log a informational message"""
+        """log an informational message"""
         self.__do_log('INFO', msg)
 
     def log_warning(self, msg):
