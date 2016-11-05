@@ -35,8 +35,7 @@ class Agent(object):
         # START inner functions
 
         def __convert_to_text(module_name, args):
-            """ converts a module name and its arguments to a text representation"""
-            # print args
+            """convert a module name and its arguments to a text representation"""
             text = ''
             text += 'Running function '
             text += str(args['settings']['function'])
@@ -50,7 +49,7 @@ class Agent(object):
             return text
 
         def __run_registration():
-            """ runs the client registration named chain -REG- """
+            """run the client registration named chain -REG-"""
             self.logger.log_debug('Chain ' + 'REG' + ' running')
             result = __run_single_chain(self.chain['REG'])
             self.logger.log_debug('Chain ' + 'REG' + ' finished')
@@ -71,9 +70,8 @@ class Agent(object):
                 # TODO[30/10/2016][bl4ckw0rm] retry registration when failed
 
         def __run_client():
-            """ runs the named chain -CLIENT- """
+            """run the named chain -CLIENT-"""
             while True:
-
                 self.logger.log_info('Chain ' + 'CLIENT' + ' running')
                 result = __run_single_chain(self.chain['CLIENT'])
                 if result:
@@ -86,13 +84,11 @@ class Agent(object):
                 time.sleep(self.interval)
 
         def __run_module(module, args=None):
-            """ runs a module from the chain """
+            """run a module from the chain"""
             module_type = str(module.__module_type__)
             module_name = str(module.__class_name__)
-            # self.log_info(args)
 
-            self.logger.log_info(__convert_to_text(module_name, args))
-
+            self.logger.log_debug(__convert_to_text(module_name, args))
             self.logger.log_info("Running " + module_type + " module " +
                                  str(module.__name__) + "." + module_name +
                                  " - Args: " + str(args))
@@ -107,25 +103,6 @@ class Agent(object):
             return result
 
         def __validate_result(result):
-            # REVIEW[30/10/2016][bl4ckw0rm]
-            """
-            def handle_error_code(error_code):
-                pass
-            """
-
-            # ERROR "CODE" HANDLING
-
-            # TODO
-            #
-            # output: use it to stop the thread?
-            # for self shutdown?
-            # secret code to shutdown/self destruct the malwr?
-            #
-
-            # do special processing in here
-            # perhaps shutdown initiated from a module
-
-            # TODO: error handling
             # TODO[28/10/2016][bl4ckw0rm] type casts should be used "consistently"
             self.logger.log_debug('Result validation ' + str(type(result)) + ' ' + str(result))
 
@@ -136,7 +113,7 @@ class Agent(object):
                 return True
 
         def __run_single_chain(chain):
-            """ runs a named chain from the chain dict() """
+            """run a named chain from the chain dict()"""
             retry_cnt = 3
             input_ = None
             timeout = 5
@@ -145,10 +122,16 @@ class Agent(object):
             for item in chain:
                 module, args = item
                 args['settings']['input'] = input_
+                ignore_output = args['settings'].get('ignore_output', False)
 
                 try_cnt = 1
                 while try_cnt <= retry_cnt:
                     output = __run_module(module, args=args)
+
+                    if ignore_output:
+                        run_next = True
+                        break
+
                     run_next = __validate_result(output)
                     if run_next:
                         # output from module becomes input for next module
@@ -158,7 +141,7 @@ class Agent(object):
                         time.sleep(timeout)
 
                     if try_cnt == retry_cnt:
-                        return False
+                        run_next = False
                     else:
                         try_cnt += 1
 

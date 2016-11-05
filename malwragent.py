@@ -39,6 +39,31 @@ def get_user_input():
     pass
 
 
+def do_wizard_egress(egress_filename, config_filename, client):
+
+    chain_id = __CHAINS_TO_BUILD[0]
+    client.init_chain(chain_id)
+
+    selected_module_name = 'Web'
+
+    with open(egress_filename, 'r') as ulist:
+        for url in ulist:
+            if url.strip():
+                module_args = {
+                    'settings': {
+                        'function': 'f_http_get',
+                        'args': {
+                            'url': url.strip()
+                        },
+                        'ignore_output': True
+                    }
+                }
+                client.add_item(chain_id, selected_module_name, module_args)
+
+    client.save_chain_to_file(config_filename)
+    return
+
+
 def do_wizard(modules, config_filename, client):
     # TODO
     # ask for interval
@@ -188,6 +213,9 @@ def main():
                         help="interval for periodic chain execution, default: 10 seconds",
                         type=int,
                         default=10)
+    parser.add_argument("-e", "--egress",
+                        help="load file with URLs and build configuration for egress testing",
+                        type=str)
     parser.add_argument("--log",
                         help="increase logging output verbosity",
                         type=int,
@@ -209,13 +237,13 @@ def main():
     if args.log > 3:
         print "Config filename", config_filename
 
+    # TODO[04/11/2016][bl4ckw0rm] init config_filename at init
     # TODO create multiple client objects for multiple concurrent running clients
     client = Client(logging_level=args.log)
+    client.set_client_name(client_name)
 
     if args.load:
         # TODO allow multiple config files
-        client_name = config_filename.replace('.json', '')
-        client.set_client_name(client_name)
 
         try:
             client.load_chain_from_file(filename=config_filename)
@@ -245,8 +273,10 @@ def main():
 
         client.set_client_interval(args.interval)
         client.run_agent()
+    elif args.egress:
+        # TODO[04/11/2016][bl4ckw0rm] validate url list / format
+        return do_wizard_egress(args.egress, config_filename, client)
     elif args.wizard:
-        client.set_client_name(client_name)
         print_welcome()
         all_modules_list = client.get_module_list(out_format='select')
         return do_wizard(all_modules_list, config_filename, client)

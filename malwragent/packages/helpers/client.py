@@ -39,7 +39,6 @@ class Client(Chain):
                 functions.append(name)
         return functions
 
-    # TODO merge get_module and get_import
     def __get_module(self, name):
         mod_info = {}
         for module_loader, module_name, is_pkg in pkgutil.iter_modules(modules.__path__):

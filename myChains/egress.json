@@ -1,0 +1,38 @@
+[
+    {
+        "type": "Transportation", 
+        "module": "Web", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_http_get", 
+            "ignore_output": true, 
+            "args": {
+                "url": "http://google.at"
+            }
+        }
+    }, 
+    {
+        "type": "Transportation", 
+        "module": "Web", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_http_get", 
+            "ignore_output": true, 
+            "args": {
+                "url": "http://mfs-enterprise.com"
+            }
+        }
+    }, 
+    {
+        "type": "Transportation", 
+        "module": "Web", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_http_get", 
+            "ignore_output": true, 
+            "args": {
+                "url": "http://test.de"
+            }
+        }
+    }
+]

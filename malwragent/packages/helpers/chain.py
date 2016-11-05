@@ -198,13 +198,11 @@ class Chain(object):
 
         if result['result'] is True:
             self.logger.log_info(convert_to_text(module_name) + ' done')
-
             self.chain[chain_id].append((module, module_args))
             if mode == 'interactive':
                 return result
         elif result['result'] is False:
-            self.logger.log_info(convert_to_text(module_name) + ' failed')
-
+            self.logger.log_critical(convert_to_text(module_name) + ' failed')
             if mode == 'interactive':
                 return result
             else:
