@@ -8,7 +8,7 @@
 
     -- .- .-.. .-- .-. .- --. . -. - 
 
-[![Code Climate](https://codeclimate.com/github/michaelschratt/MalwrAgent/badges/gpa.svg)](https://codeclimate.com/github/michaelschratt/MalwrAgent) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ac34274f76e742f089e82684c2e50dee)](https://www.codacy.com/app/bl4ckw0rm/MalwrAgent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=michaelschratt/MalwrAgent&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/michaelschratt/MalwrAgent.svg?branch=master)](https://travis-ci.org/michaelschratt/MalwrAgent) [![Code Climate](https://codeclimate.com/github/michaelschratt/MalwrAgent/badges/gpa.svg)](https://codeclimate.com/github/michaelschratt/MalwrAgent) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ac34274f76e742f089e82684c2e50dee)](https://www.codacy.com/app/bl4ckw0rm/MalwrAgent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=michaelschratt/MalwrAgent&amp;utm_campaign=Badge_Grade)
 
 ### About MalwrAgent
 
