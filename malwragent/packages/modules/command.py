@@ -21,5 +21,8 @@ class Command(AgentModule):
     def f_exec_system(self):
         """execute a command"""
         cli_and_args = shlex.split(self.settings['input'])
-        process = subprocess.Popen(cli_and_args, stdout=subprocess.PIPE)
+        try:
+            process = subprocess.Popen(cli_and_args, stdout=subprocess.PIPE)
+        except OSError:
+            return False
         return process.stdout.read().strip()

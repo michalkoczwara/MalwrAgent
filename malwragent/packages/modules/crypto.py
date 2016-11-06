@@ -38,7 +38,7 @@ class Crypto(AgentModule):
         elif type_ == 'sha256':
             message_digest = hashlib.sha256()
 
-        message_digest.update(self.settings['input'])
+        message_digest.update(self.input)
         return message_digest.hexdigest()
 
     @Decorators.args(None)  # can be applied to methods, not a must
@@ -56,8 +56,16 @@ class Crypto(AgentModule):
 
     def f_base64_encode(self):
         """encode input with base64"""
-        return base64.b64encode(self.settings['input'])
+        return base64.b64encode(self.input)
 
     def f_base64_decode(self):
         """decode input with base64"""
-        return base64.b64decode(self.settings['input'])
+        return base64.b64decode(self.input)
+    
+    def f_hex_to_ascii(self):
+        """convert a string from hex to ascii format"""
+        return self.input.decode('hex')
+
+    def f_ascii_to_hex(self):
+        """convert a string from ascii to hex format"""
+        return self.input.encode('hex')

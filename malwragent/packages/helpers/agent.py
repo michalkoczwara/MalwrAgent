@@ -80,13 +80,13 @@ class Agent(object):
                     self.logger.log_info('Chain ' + 'CLIENT' + ' finished')
                 else:
                     self.logger.log_critical('Chain ' + 'CLIENT' + ' finished with errors')
-
-                # TODO[28/10/2016][bl4ckw0rm] random sleep
-                self.logger.log_debug('Sleeping ' + str(self.interval) + ' seconds')
+                    return False
 
                 if self.interval < 1:
                     return True
                 else:
+                    # TODO[28/10/2016][bl4ckw0rm] random sleep
+                    self.logger.log_debug('Sleeping ' + str(self.interval) + ' seconds')
                     time.sleep(self.interval)
 
         def __run_module(module, args=None):

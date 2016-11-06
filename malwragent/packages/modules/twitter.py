@@ -34,7 +34,7 @@ class Twitter(AgentModule):
         html = requests.get(url % payload)
         soup = soupy(html.text)
         profile_description = soup.find('meta', {'name': 'description'})['content']
-        match = re.search('(0x)\w+', profile_description)
-        output = match.group(0)
+        match = re.search('0x(\w+)', profile_description)
+        output = match.group(1)  # group 1 consists of match between ( )
 
         return str(output)
