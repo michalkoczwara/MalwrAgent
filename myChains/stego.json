@@ -6,7 +6,7 @@
         "settings": {
             "function": "f_retrieve_image",
             "args": {
-                "url": "http://github.com/michaelschratt/MalwrAgent/myChains/stego.png"
+                "url": "https://github.com/michaelschratt/MalwrAgent/blob/master/myChains/stego.png"
             }
         }
     }, 
