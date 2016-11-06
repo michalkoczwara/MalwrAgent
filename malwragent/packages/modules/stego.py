@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from stegano import lsb
 
 from malwragent.packages.helpers.agentmodule import AgentModule
-from malwragent.packages.helpers.agentmodule import Decorators
 
 __class_name__ = 'Stego'
 __client_mode__ = True
@@ -23,5 +22,8 @@ class Stego(AgentModule):
         :return: A text, command string
         """
         input_ = self.settings['input']
-        output = lsb.reveal(input_)
+        try:
+            output = lsb.reveal(input_)
+        except IOError:
+            return False
         return str(output)

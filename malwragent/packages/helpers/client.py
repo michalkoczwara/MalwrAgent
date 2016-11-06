@@ -23,6 +23,7 @@ class Client(Chain):
         self.interval_random = False
 
         self.jobs = []
+        self.results_queue = multiprocessing.Queue()
 
     def set_client_name(self, name):
         self.name = name
@@ -80,11 +81,18 @@ class Client(Chain):
                 count += 1
             return module_list
 
+    def get_results(self):
+        """get results from shared queue"""
+        return self.results_queue.get()
+
     def run_agent(self):
+        """run a client"""
         process = multiprocessing.Process(target=Agent,
                                           args=(self.name, self.mode, self.chain,
-                                                self.interval, self.logging_level
-                                                ))
+                                                self.interval, self.results_queue,
+                                                self.logging_level
+                                                )
+                                          )
         self.jobs.append(process)
 
         for j in self.jobs:
@@ -92,4 +100,3 @@ class Client(Chain):
 
         for j in self.jobs:
             j.join()
-

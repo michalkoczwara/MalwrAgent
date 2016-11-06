@@ -40,7 +40,7 @@ def get_user_input():
 
 
 def do_wizard_egress(egress_filename, config_filename, client):
-
+    """load urls from file and create chain of http get requests"""
     chain_id = __CHAINS_TO_BUILD[0]
     client.init_chain(chain_id)
 

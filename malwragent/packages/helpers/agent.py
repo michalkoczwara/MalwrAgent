@@ -10,11 +10,13 @@ __class_name__ = 'Agent'
 
 
 class Agent(object):
-    def __init__(self, name, mode, chain, interval, logging_level=0):
+    def __init__(self, name, mode, chain, interval, result_queue, logging_level=0):
         self.name = name
         self.mode = mode
         self.chain = chain
         self.interval = interval
+        self.result_queue = result_queue
+
         self.pid = str(os.getpid())
         if hasattr(os, 'getppid'):  # only available on Unix
             self.ppid = str(os.getppid())
@@ -81,7 +83,11 @@ class Agent(object):
 
                 # TODO[28/10/2016][bl4ckw0rm] random sleep
                 self.logger.log_debug('Sleeping ' + str(self.interval) + ' seconds')
-                time.sleep(self.interval)
+
+                if self.interval < 1:
+                    return True
+                else:
+                    time.sleep(self.interval)
 
         def __run_module(module, args=None):
             """run a module from the chain"""
@@ -130,20 +136,20 @@ class Agent(object):
 
                     if ignore_output:
                         run_next = True
-                        break
+                        break  # breaks out of while
 
                     run_next = __validate_result(output)
                     if run_next:
-                        # output from module becomes input for next module
-                        input_ = output
-                        break
-                    else:
-                        time.sleep(timeout)
+                        input_ = output  # output from module becomes input for next module
+                        break  # breaks out of while
 
-                    if try_cnt == retry_cnt:
-                        run_next = False
-                    else:
-                        try_cnt += 1
+                    if not run_next:
+                        time.sleep(timeout)
+                        self.logger.log_error('Retrying %s of %s times' % (try_cnt, retry_cnt))
+                        if try_cnt == retry_cnt:
+                            return run_next
+                        else:
+                            try_cnt += 1
 
             return run_next
 
@@ -155,7 +161,7 @@ class Agent(object):
             __run_registration()
 
             if self.registered:
-                __run_client()
+                self.result_queue.put(__run_client())
         else:
             # Run the client without registration
-            __run_client()
+            self.result_queue.put(__run_client())

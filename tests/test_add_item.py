@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import pytest
-
 from malwragent.packages.helpers.client import Client
 
 __CHAIN_ID = 'CLIENT'
@@ -158,7 +156,7 @@ def test_twitter_f_grab_cmd_from_twitter_profile():
     assert result['result'] is True
 
 
-def test_web_f_http_get():
+def test_web_f_http_get_1():
     __CLIENT.clear_chain()
     module_args = {
         'settings': {
@@ -170,7 +168,7 @@ def test_web_f_http_get():
     assert result['result'] is False and result['code'] == 400  # Argument not provided
 
 
-def test_web_f_http_get():
+def test_web_f_http_get_2():
     __CLIENT.clear_chain()
     module_args = {
         'settings': {
@@ -184,7 +182,7 @@ def test_web_f_http_get():
     assert result['result'] is False and result['code'] == 403  # Argument provided but empty
 
 
-def test_web_f_http_get():
+def test_web_f_http_get_3():
     __CLIENT.clear_chain()
     module_args = {
         'settings': {
@@ -198,7 +196,7 @@ def test_web_f_http_get():
     assert result['result'] is False and result['code'] == 402  # Argument provided but format invalid
 
 
-def test_web_f_http_get():
+def test_web_f_http_get_4():
     __CLIENT.clear_chain()
     module_args = {
         'settings': {
@@ -240,7 +238,7 @@ def test_web_f_retrieve_image():
     assert result['result'] is True
 
 
-def test_stego_f_extract_text_from_image():
+def test_stego_f_extract_text_from_image_1():
     module_args = {
         'settings': {
             'function': 'f_extract_text_from_image',
@@ -262,7 +260,7 @@ def test_f_exec_system():
     assert result['result'] is True
 
 
-def test_stego_f_extract_text_from_image():
+def test_stego_f_extract_text_from_image_2():
     __CLIENT.clear_chain()
     module_args = {
         'settings': {

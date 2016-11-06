@@ -33,6 +33,10 @@ class Chain(object):
         return __import__('malwragent.packages.modules.' + module.lower(),
                           fromlist=[module])
 
+    def set_chain(self, chain):
+        """set chain"""
+        self.chain = chain
+
     def init_chain(self, chain_id):
         """initiate a chain by its ID"""
         if not self.chain.get(chain_id, None):
