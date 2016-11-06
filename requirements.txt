@@ -4,3 +4,4 @@ requests
 termcolor
 tabulate
 validators
+pytest
