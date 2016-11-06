@@ -16,7 +16,6 @@ __module_type__ = 'Transformation'
 class Stego(AgentModule):
     """provide basic stego routines"""
 
-    @Decorators.args(None)  # Decorators.args must be defined at the moment
     def f_extract_text_from_image(self):
         """extract hidden text from an image object
 

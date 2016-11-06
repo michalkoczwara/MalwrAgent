@@ -16,7 +16,9 @@ class Chain(object):
     """the chain class consists of all methods needed to create a client's chain"""
     def __init__(self, name, logging_level):
         # start with an empty chain
-        self.chain = dict()
+        self.chain = {
+            'CLIENT': []
+        }
         self.name = name
         self.logging_level = logging_level
 
@@ -35,6 +37,16 @@ class Chain(object):
         """initiate a chain by its ID"""
         if not self.chain.get(chain_id, None):
             self.chain[chain_id] = []
+
+    def clear_chain(self):
+        """set chain to its default"""
+        self.chain = {
+            'CLIENT': []
+        }
+
+    def clear_chain_by_id(self, chain_id):
+        """set specific chain to its default, identified by ID"""
+        self.chain[chain_id] = []
 
     def get_chain_length(self):
         """get a chain's length"""
