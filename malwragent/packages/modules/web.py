@@ -71,15 +71,15 @@ class Web(AgentModule):
 
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
-    def f_http_get(self, url):
+    def f_http_get(self, url, ):
         """send http get request"""
-        return self.__do_http_request('GET', url, self.settings['input'])
+        return self.__do_http_request('GET', url, self.input)
 
     @Decorators.args([('url', _FORMAT.URL)])
     @Decorators.config(run_first=True)
     def f_http_post(self, url):
         """send http post request"""
-        return self.__do_http_request('POST', url, self.settings['input'])
+        return self.__do_http_request('POST', url, self.input)
 
     @staticmethod
     @Decorators.args([('url', _FORMAT.URL)])
@@ -91,4 +91,14 @@ class Web(AgentModule):
         :return: Object of image
         """
         output = BytesIO(requests.get(url).content)
+        return output
+
+    def f_retrieve_image_from_input_url(self):
+        """retrieve an image, image is stored in memory only
+        :rtype: StringIO object
+        :return: Object of image
+        """
+        if not self.input.startswith('http'):
+            self.input = 'http://' + self.input
+        output = BytesIO(requests.get(self.input).content)
         return output

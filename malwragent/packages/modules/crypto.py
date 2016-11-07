@@ -61,7 +61,7 @@ class Crypto(AgentModule):
     def f_base64_decode(self):
         """decode input with base64"""
         return base64.b64decode(self.input)
-    
+
     def f_hex_to_ascii(self):
         """convert a string from hex to ascii format"""
         return self.input.decode('hex')
