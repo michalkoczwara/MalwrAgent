@@ -87,6 +87,12 @@ class Chain(object):
     # TODO low: validate chain order for second,third ... module ???
     def __validate_config(self, module_idx, module_args):
         """validate a chain's configuration based on module order and argument format"""
+
+        settings = module_args.get('settings', None)
+        function = settings.get('function', None)
+        config = ATTR_CONFIG.get(function, None)
+        user_provided_arguments = settings.get('args', None)
+
         # START inner functions
 
         def __do_validate():
@@ -95,10 +101,6 @@ class Chain(object):
             if module_args is None:
                 _result = {'result': False, 'reason': 'Please do not act like a fool, try again', 'code': 501}
             else:
-                settings = module_args.get('settings', None)
-                function = settings.get('function', None)
-                user_provided_arguments = settings.get('args', None)
-
                 if function in ATTR_ARGS:
                     self.logger.log_debug('Checking ' + function + ' with parameters ' + str(user_provided_arguments))
 
@@ -170,10 +172,6 @@ class Chain(object):
                 'reason': 'Module cannot be run first in chain',
                 'code': 405
             }
-
-            settings = module_args.get('settings', None)
-            function = settings.get('function', None)
-            config = ATTR_CONFIG.get(function, None)
 
             if module_idx < 1:
                 if config:

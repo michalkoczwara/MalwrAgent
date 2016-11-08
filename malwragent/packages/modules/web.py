@@ -66,6 +66,8 @@ class Web(AgentModule):
             request = requests.get(url, payload)
         elif type_ == 'POST':
             request = requests.post(url, payload)
+        else:
+            request = None
 
         return self.__validate_request_status(request)
 
