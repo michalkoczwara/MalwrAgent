@@ -83,24 +83,18 @@ class Web(AgentModule):
         """send http post request"""
         return self.__do_http_request('POST', url, self.input)
 
-    @staticmethod
     @Decorators.args([('url', _FORMAT.URL)])
-    @Decorators.config(run_first=True)
-    def f_retrieve_image(url):
+    @Decorators.config(run_first=True, hybrid=True)
+    def f_retrieve_image(self, url=None):
         """retrieve an image, image is stored in memory only
         :rtype: StringIO object
         :param url: Image URL
         :return: Object of image
         """
-        output = BytesIO(requests.get(url).content)
-        return output
-
-    def f_retrieve_image_from_input_url(self):
-        """retrieve an image, image is stored in memory only
-        :rtype: StringIO object
-        :return: Object of image
-        """
-        if not self.input.startswith('http'):
-            self.input = 'http://' + self.input
-        output = BytesIO(requests.get(self.input).content)
+        if self.input:
+            if not self.input.startswith('http'):
+                self.input = 'http://' + self.input
+            output = BytesIO(requests.get(self.input).content)
+        else:
+            output = BytesIO(requests.get(url).content)
         return output

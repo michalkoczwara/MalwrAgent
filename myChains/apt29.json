@@ -24,7 +24,7 @@
         "module": "Web", 
         "chain": "CLIENT", 
         "settings": {
-            "function": "f_retrieve_image_from_input_url", 
+            "function": "f_retrieve_image",
             "args": null
         }
     }, 

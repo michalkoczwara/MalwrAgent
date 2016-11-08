@@ -246,12 +246,8 @@ def main():
         # TODO allow multiple config files
 
         try:
-            client.load_chain_from_file(filename=config_filename)
-            if client.get_chain_length_by_id('CLIENT') < 1:
-                print
-                print colored('Chain Emtpy ... ?', 'red')
-                print
-                return 1
+            if not client.load_chain_from_file(filename=config_filename):
+                return False
         except IOError as err:
             if args.log > 3:
                 print
@@ -261,6 +257,12 @@ def main():
                 print
                 print colored('Create a chain first!', 'red')
                 print
+            return 1
+
+        if client.get_chain_length_by_id('CLIENT') < 1:
+            print
+            print colored('Chain Emtpy ... ?', 'red')
+            print
             return 1
 
         # This is the single sign of execution, when --log LEVEL is not provided
