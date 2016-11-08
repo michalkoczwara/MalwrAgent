@@ -56,7 +56,7 @@ class Decorators(object):
             # print func.__name__
             # print kwargs
             # TODO remove test when ready
-            for c in ['run_first', 'test']:
+            for c in ['run_first', 'hybrid', 'test']:
                 if not ATTR_CONFIG.get(func.__name__, None):
                     ATTR_CONFIG[func.__name__] = dict()
                 if c in kwargs:

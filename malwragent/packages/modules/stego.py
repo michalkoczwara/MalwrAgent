@@ -21,9 +21,8 @@ class Stego(AgentModule):
         :rtype: String
         :return: A text, command string
         """
-        input_ = self.settings['input']
         try:
-            output = lsb.reveal(input_)
+            output = lsb.reveal(self.input)
         except IOError:
             return False
         return str(output)
